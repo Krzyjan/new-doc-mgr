@@ -26,6 +26,7 @@ dependencies {
     testImplementation("org.hibernate:hibernate-testing:6.0.0.Final")
 }
 
+defaultTasks("build")
 
 tasks.test {
     useJUnit()
