@@ -1,6 +1,8 @@
 
 rootProject.name = "NewDocumentManager"
 
+include("Backend", "UserInterface")
+
 pluginManagement {
     val kotlinVersion: String by settings
     val springVersion: String by settings

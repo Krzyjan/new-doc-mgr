@@ -15,7 +15,6 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.6")
     implementation("org.springframework.boot:spring-boot-gradle-plugin:2.6.6")
