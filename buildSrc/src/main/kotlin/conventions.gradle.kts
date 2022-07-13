@@ -3,4 +3,3 @@ plugins {
 }
 
 group = "me.krzyjan.documentmgr"
-
