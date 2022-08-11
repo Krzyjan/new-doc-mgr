@@ -1,6 +1,5 @@
 plugins {
     id("conventions")
-    id ("org.jetbrains.kotlin.jvm")
 }
 
 repositories {
@@ -10,13 +9,13 @@ repositories {
     }
 }
 
-kotlin {
-    val doodleVersion:String by project
 
-    dependencies {
-        implementation("io.nacular.doodle:core:$doodleVersion")
-        implementation("io.nacular.doodle:desktop-jvm-${targetSuffix()}:$doodleVersion")
-        implementation("io.nacular.doodle:themes:$doodleVersion")
-        implementation("io.nacular.doodle:controls:$doodleVersion")
-    }
+val doodleVersion: String by project
+
+dependencies {
+    implementation("io.nacular.doodle:core:$doodleVersion")
+    implementation("io.nacular.doodle:desktop-jvm-${targetSuffix()}:$doodleVersion")
+    implementation("io.nacular.doodle:themes:$doodleVersion")
+    implementation("io.nacular.doodle:controls:$doodleVersion")
 }
+
