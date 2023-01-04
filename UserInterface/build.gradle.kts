@@ -1,29 +1,30 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
-    id("conventions")
     kotlin("jvm")
+    id("org.jetbrains.compose") version "1.2.2"
 }
+
+group = "my.krzyjan.documentmgr"
+version = "1.0-SNAPSHOT"
 
 repositories {
+    google()
     mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
-
-
-val doodleVersion: String by project
 
 dependencies {
-    implementation("io.nacular.doodle:core:$doodleVersion")
-    implementation("io.nacular.doodle:desktop-jvm-${targetSuffix()}:$doodleVersion")
-    implementation("io.nacular.doodle:themes:$doodleVersion")
-    implementation("io.nacular.doodle:controls:$doodleVersion")
+    implementation(compose.desktop.currentOs)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.UsesKotlinJavaToolchain>().configureEach {
-    kotlinJavaToolchain.jdk.use(
-        "F:\\Applications\\Java\\jdk11.0.8_10", // Put a path to your JDK
-        JavaVersion.VERSION_11
-    )
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "UserInterface"
+            packageVersion = "1.0.0"
+        }
+    }
 }
-
