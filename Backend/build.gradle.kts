@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.3.70"
+    kotlin("plugin.spring")
     id("org.springframework.boot")
     application
 }
@@ -31,13 +31,6 @@ tasks.test {
     useJUnit()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.UsesKotlinJavaToolchain>().configureEach {
-    kotlinJavaToolchain.jdk.use(
-        "F:\\Applications\\Java\\jdk11.0.8_10", // Put a path to your JDK
-        JavaVersion.VERSION_11
-    )
-}
-
 allOpen {
     annotation("javax.persistence.Entity")
     annotation("javax.persistence.MappedSuperclass")
@@ -45,5 +38,5 @@ allOpen {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("my.krzyjan.documentmgr.model.MainKt")
 }

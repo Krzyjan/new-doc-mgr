@@ -11,20 +11,13 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.UsesKotlinJavaToolchain>().configureEach {
-    kotlinJavaToolchain.jdk.use(
-        "F:\\Applications\\Java\\jdk11.0.8_10", // Put a path to your JDK
-        JavaVersion.VERSION_11
-    )
-}
-
 val kodeinVersion: String by project
 
 dependencies {
     implementation(project(":UserInterface"))
     api("org.kodein.di:kodein-di:$kodeinVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 tasks.getByName<Test>("test") {
