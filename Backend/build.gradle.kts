@@ -13,16 +13,14 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion: String by project
-
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.6")
-    implementation("org.springframework.boot:spring-boot-gradle-plugin:2.6.6")
-    implementation("org.hibernate.orm:hibernate-core:6.0.0.Final")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("com.h2database:h2:2.1.212")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.6")
-    testImplementation("org.hibernate:hibernate-testing:6.0.0.Final")
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.gradle.plugin)
+    implementation(libs.hibernate.core)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.h2)
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.hibernate.testing)
 }
 
 defaultTasks("build")

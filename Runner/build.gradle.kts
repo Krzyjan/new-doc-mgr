@@ -11,13 +11,11 @@ repositories {
     mavenCentral()
 }
 
-val kodeinVersion: String by project
-
 dependencies {
     implementation(project(":UserInterface"))
-    api("org.kodein.di:kodein-di:$kodeinVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    api(libs.kodein.di)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 tasks.getByName<Test>("test") {
