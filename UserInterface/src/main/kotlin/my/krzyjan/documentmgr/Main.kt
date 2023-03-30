@@ -15,7 +15,7 @@ import androidx.compose.ui.window.application
 class UserInterface {
     @Composable
     @Preview
-    fun invoke() {
+    private fun build() {
         var text by remember { mutableStateOf("Hello, World!") }
 
         MaterialTheme {
@@ -26,10 +26,12 @@ class UserInterface {
             }
         }
     }
-}
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        UserInterface().invoke()
+    fun invoke() = application {
+        Window(onCloseRequest = ::exitApplication) {
+            build()
+        }
     }
 }
+
+fun main() = UserInterface().invoke()
