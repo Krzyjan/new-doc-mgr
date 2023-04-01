@@ -17,10 +17,10 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.gradle.plugin)
     implementation(libs.hibernate.core)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.h2)
-    testImplementation(libs.spring.boot.starter.test)
-    testImplementation(libs.hibernate.testing)
+    testImplementation(testLibs.kotlin.test)
+    testImplementation(testLibs.h2)
+    testImplementation(testLibs.spring.boot.starter.test)
+    testImplementation(testLibs.hibernate.testing)
 }
 
 defaultTasks("build")

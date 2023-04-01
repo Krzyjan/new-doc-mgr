@@ -14,8 +14,8 @@ repositories {
 dependencies {
     implementation(project(":UserInterface"))
     api(libs.kodein.di)
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(testLibs.junit.jupiter.api)
+    testRuntimeOnly(testLibs.junit.jupiter.engine)
 }
 
 tasks.getByName<Test>("test") {
