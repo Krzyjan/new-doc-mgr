@@ -15,7 +15,9 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":Backend"))
     implementation(compose.desktop.currentOs)
+    api(libs.kodein.di)
 }
 
 compose.desktop {
