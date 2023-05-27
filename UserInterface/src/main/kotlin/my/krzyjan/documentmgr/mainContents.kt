@@ -15,7 +15,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,8 @@ val di = DI {
     }
 }
 
+private val rootStore: RootStore by di.instance()
+
 @Composable
 private fun documentList() {
     TopAppBar(title = { Text(text = "Document List") })
@@ -36,13 +40,13 @@ private fun documentList() {
 
 @Composable
 private fun listContent() {
-    val rootStore: RootStore by di.instance()
-    remember { rootStore }
+    val model = remember { rootStore }
+
     Box {
         val listState = rememberLazyListState()
 
         LazyColumn(state = listState) {
-            items(rootStore.state.items) { it ->
+            items(model.state.items) { it ->
                 item(it)
 
                 Divider()
@@ -76,28 +80,47 @@ private fun item(document: Document) {
     }
 }
 
+internal fun Modifier.onKeyUp(key: Key, action: () -> Unit): Modifier =
+    onKeyEvent { event ->
+        if ((event.type == KeyEventType.KeyUp) && (event.key == key)) {
+            action()
+            true
+        } else {
+            false
+        }
+    }
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun newDocument() {
+    val model = remember { rootStore }
+
     TopAppBar(title = { Text(text = "Add Document") })
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
         OutlinedTextField(
-            value = "dummyName",
-            onValueChange = { /* TODO */ },
+            value = model.state.newName,
+            modifier = Modifier
+                        .weight(weight = 1F)
+                        .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
+            onValueChange = model::onNameChanged,
             label = { Text(text = "Document Name") }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         OutlinedTextField(
-            value = "dummyPath",
-            onValueChange = { /* TODO */ },
+            value = model.state.newPath,
+            modifier = Modifier
+                .weight(weight = 1F)
+                .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
+            onValueChange = model::onPathChanged,
             label = { Text(text = "Document Path") }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = { /* TODO */ }) {
+        IconButton(onClick = model::onAddItemClicked) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null

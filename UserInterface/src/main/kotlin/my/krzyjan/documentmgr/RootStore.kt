@@ -12,6 +12,22 @@ internal class RootStore {
     fun onItemClicked(id: Long) {
         setState { copy(editingItemId = id) }
     }
+
+    fun onAddItemClicked() {
+        setState {
+            val newItem = Document(name = newName, path = newPath)
+
+            copy(items = items + newItem, newName = "", newPath = "")
+        }
+    }
+
+    fun onNameChanged(text: String) {
+        setState { copy(newName = text) }
+    }
+
+    fun onPathChanged(text: String) {
+        setState { copy(newPath = text) }
+    }
     private fun initialState(): RootState =
         RootState(
             items = (1L .. 5L).map { id ->
@@ -20,12 +36,14 @@ internal class RootStore {
         )
 
     private inline fun setState(update: RootState.() -> RootState) {
-        state.update()
+        state = state.update()
     }
 
     data class RootState (
         val items: List<Document> = emptyList(),
-        val editingItemId: Long? = null
+        val editingItemId: Long? = null,
+        val newName: String = "",
+        val newPath: String = ""
     )
 }
 
