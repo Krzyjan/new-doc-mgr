@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.gradle.plugin)
     implementation(libs.hibernate.core)
+    implementation(libs.kotlin.reflect)
     testImplementation(testLibs.kotlin.test)
     testImplementation(testLibs.h2)
     testImplementation(testLibs.spring.boot.starter.test)
