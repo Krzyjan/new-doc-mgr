@@ -1,8 +1,6 @@
 plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
     kotlin("jvm")
-    kotlin("plugin.spring")
-    id("org.springframework.boot")
     application
 }
 
@@ -14,20 +12,21 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.spring.boot.starter.data.jpa)
-    implementation(libs.spring.boot.gradle.plugin)
-    implementation(libs.hibernate.core)
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
     testImplementation(testLibs.kotlin.test)
     testImplementation(testLibs.h2)
-    testImplementation(testLibs.spring.boot.starter.test)
-    testImplementation(testLibs.hibernate.testing)
+    testImplementation(testLibs.junit.jupiter.api)
+    testImplementation(testLibs.junit.jupiter.engine)
 }
 
 defaultTasks("build")
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 allOpen {

@@ -1,7 +1,6 @@
-
 rootProject.name = "NewDocumentManager"
 
-include("Backend", "UserInterface","Runner")
+include("Backend", "UserInterface", "Runner")
 
 pluginManagement {
     repositories {
@@ -29,25 +28,26 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             version("kotlin", "1.8.0")
+            version("kotlinx-coroutines", "1.7.3")
             version("kodein", "7.18.0")
             version("springframework", "3.1.0")
-            version("hibernate", "6.2.4.Final")
+            version("exposed", "0.41.1")
+
             library("kodein-di", "org.kodein.di", "kodein-di").versionRef("kodein")
-            library("spring-boot-starter-data-jpa", "org.springframework.boot", "spring-boot-starter-data-jpa").versionRef("springframework")
-            library("spring-boot-gradle-plugin", "org.springframework.boot", "spring-boot-gradle-plugin").versionRef("springframework")
-            library("hibernate-core", "org.hibernate.orm", "hibernate-core").versionRef("hibernate")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
+            library("kotlinx-coroutines-core", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("kotlinx-coroutines")
+            library("exposed-core", "org.jetbrains.exposed", "exposed-core").versionRef("exposed")
+            library("exposed-dao", "org.jetbrains.exposed", "exposed-dao").versionRef("exposed")
+            library("exposed-jdbc", "org.jetbrains.exposed", "exposed-jdbc").versionRef("exposed")
         }
         create("testLibs") {
             version("kotlin", "1.8.0")
             version("jupiter", "5.9.2")
             version("springframework", "3.1.0")
-            version("hibernate", "6.2.4.Final")
             version("h2", "2.1.214")
+
             library("junit-jupiter-api", "org.junit.jupiter", "junit-jupiter-api").versionRef("jupiter")
             library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("jupiter")
-            library("spring-boot-starter-test", "org.springframework.boot", "spring-boot-starter-test").versionRef("springframework")
-            library("hibernate-testing", "org.hibernate", "hibernate-testing").versionRef("hibernate")
             library("kotlin-test", "org.jetbrains.kotlin", "kotlin-test").versionRef("kotlin")
             library("h2", "com.h2database", "h2").versionRef("h2")
         }
