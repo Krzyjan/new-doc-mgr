@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
         SchemaUtils.create (Cities)
 
         // insert new city. SQL: INSERT INTO Cities (name) VALUES ('St. Petersburg')
-        val stPete = City.new {
+        City.new {
             name = "St. Petersburg"
         }
 

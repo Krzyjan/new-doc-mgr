@@ -1,24 +1,23 @@
 package my.krzyjan.documentmgr.model
 
-import kotlinx.coroutines.runBlocking
 import my.krzyjan.documentmgr.model.DocumentServiceTest.TestConstants.DOCUMENT_NAME
 import my.krzyjan.documentmgr.model.DocumentServiceTest.TestConstants.DOCUMENT_PATH
+import my.krzyjan.documentmgr.model.DocumentServiceTest.TestConstants.NEW_DOCUMENT_NAME
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.reflect.KSuspendFunction1
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class DocumentServiceTest {
 
     object TestConstants {
         const val DOCUMENT_NAME = "Gas Bill 2023 April"
+        const val NEW_DOCUMENT_NAME = "Gas Bill 2023/04"
         const val DOCUMENT_PATH = "C:/Document/Home/Bill2/2023"
     }
     @Test
     fun testMethods() {
-        val document = Document(DOCUMENT_NAME, DOCUMENT_PATH)
         val database = Database.connect(
             url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
             user = "root",
@@ -28,25 +27,37 @@ class DocumentServiceTest {
 
         val documentService:DocumentService = ExposedDocumentService(database)
 
-        transaction {
-            SchemaUtils.create(ExposedDocumentService.Documents)
-        }
+        /*
+        ** Test create
+         */
 
-        val id = runCreate(documentService::create, document)
+        val id = documentService.create(Document(DOCUMENT_NAME, DOCUMENT_PATH))
 
-        val storedDocument = runRead(documentService::read, id)
+        var storedDocument = documentService.read(id)
 
-        if (storedDocument != null) {
-            assertEquals(DOCUMENT_NAME, storedDocument.name)
-        }
+        assertNotNull(storedDocument)
+
+        assertEquals(DOCUMENT_NAME, storedDocument.name)
+
+        /*
+        ** Test update
+         */
+
+        documentService.update(id, Document(NEW_DOCUMENT_NAME, DOCUMENT_PATH))
+
+        storedDocument = documentService.read(id)
+
+        assertNotNull(storedDocument)
+
+        assertEquals(NEW_DOCUMENT_NAME, storedDocument.name)
+
+        /*
+        ** Test delete
+         */
+        documentService.delete(id)
+
+        storedDocument = documentService.read(id)
+
+        assertNull(storedDocument)
     }
-
-    private fun runCreate(method: KSuspendFunction1<Document, Int>, document: Document) : Int = runBlocking {
-        method(document)
-    }
-
-    private fun runRead(method: KSuspendFunction1<Int, Document?>, id: Int) : Document? = runBlocking {
-        method(id)
-    }
-
 }
