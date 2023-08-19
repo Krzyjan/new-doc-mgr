@@ -14,10 +14,12 @@ internal class RootStore {
     }
 
     fun onAddItemClicked() {
-        setState {
-            val newItem = Document(name = newName, path = newPath)
+        if (state.newName.isNotBlank() && state.newPath.isNotBlank()) {
+            setState {
+                val newItem = Document(name = newName, path = newPath)
 
-            copy(items = items + newItem, newName = "", newPath = "")
+                copy(items = items + newItem, newName = "", newPath = "")
+            }
         }
     }
 
@@ -28,9 +30,10 @@ internal class RootStore {
     fun onPathChanged(text: String) {
         setState { copy(newPath = text) }
     }
+
     private fun initialState(): RootState =
         RootState(
-            items = (1L .. 5L).map { id ->
+            items = (1L..5L).map { id ->
                 Document(name = "Document $id", path = "/documents/doc${id}")
             }
         )
@@ -39,7 +42,7 @@ internal class RootStore {
         state = state.update()
     }
 
-    data class RootState (
+    data class RootState(
         val items: List<Document> = emptyList(),
         val editingItemId: Long? = null,
         val newName: String = "",
