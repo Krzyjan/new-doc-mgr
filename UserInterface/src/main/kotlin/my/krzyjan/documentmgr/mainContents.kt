@@ -17,7 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,9 +49,8 @@ private fun listContent() {
         val listState = rememberLazyListState()
 
         LazyColumn(state = listState) {
-            items(model.state.items) { it ->
+            items(model.state.items) {
                 item(it)
-
                 Divider()
             }
         }
@@ -101,8 +103,9 @@ private fun newDocument() {
         OutlinedTextField(
             value = model.state.newName,
             modifier = Modifier
-                        .weight(weight = 1F)
-                        .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
+                .weight(weight = 1F)
+                .moveOnFocusTab()
+                .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
             onValueChange = model::onNameChanged,
             label = { Text(text = "Document Name") }
         )
@@ -113,6 +116,7 @@ private fun newDocument() {
             value = model.state.newPath,
             modifier = Modifier
                 .weight(weight = 1F)
+                .moveOnFocusTab()
                 .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
             onValueChange = model::onPathChanged,
             label = { Text(text = "Document Path") }
@@ -129,6 +133,21 @@ private fun newDocument() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+internal fun Modifier.moveOnFocusTab() = composed {
+    val focusManager = LocalFocusManager.current
+    onPreviewKeyEvent {
+        if (it.type == KeyEventType.KeyDown && it.key == Key.Tab) {
+            focusManager.moveFocus(
+                if (it.isShiftPressed) FocusDirection.Previous else FocusDirection.Next
+            )
+            true
+        } else {
+            false
+        }
+    }
+}
+
 @Composable
 fun mainContent(modifier: Modifier) {
     Column(modifier) {
@@ -136,3 +155,4 @@ fun mainContent(modifier: Modifier) {
         documentList()
     }
 }
+
