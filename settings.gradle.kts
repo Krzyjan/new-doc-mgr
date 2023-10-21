@@ -32,6 +32,7 @@ dependencyResolutionManagement {
             version("kodein", "7.18.0")
             version("springframework", "3.1.0")
             version("exposed", "0.41.1")
+            version("paging", "3.2.1")
 
             library("kodein-di", "org.kodein.di", "kodein-di").versionRef("kodein")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -39,6 +40,8 @@ dependencyResolutionManagement {
             library("exposed-core", "org.jetbrains.exposed", "exposed-core").versionRef("exposed")
             library("exposed-dao", "org.jetbrains.exposed", "exposed-dao").versionRef("exposed")
             library("exposed-jdbc", "org.jetbrains.exposed", "exposed-jdbc").versionRef("exposed")
+            library("paging-runtime", "androidx.paging", "paging-runtime").versionRef("paging")
+            library("paging-common", "androidx.paging", "paging-common").versionRef("paging")
         }
         create("testLibs") {
             version("kotlin", "1.8.0")

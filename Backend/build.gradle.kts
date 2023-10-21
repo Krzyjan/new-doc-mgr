@@ -9,6 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
@@ -17,6 +18,9 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
+    implementation(libs.paging.common)
+    implementation("javax.inject:javax.inject:1")
+    runtimeOnly("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     testImplementation(testLibs.kotlin.test)
     testImplementation(testLibs.h2)
     testImplementation(testLibs.junit.jupiter.api)

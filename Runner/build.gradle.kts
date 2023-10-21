@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation(project(":UserInterface"))
     api(libs.kodein.di)
+    implementation(project(mapOf("path" to ":Backend")))
     testImplementation(testLibs.junit.jupiter.api)
     testRuntimeOnly(testLibs.junit.jupiter.engine)
 }
