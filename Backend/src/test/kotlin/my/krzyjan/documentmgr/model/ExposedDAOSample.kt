@@ -41,6 +41,8 @@ class ExposedDAOSample {
             // print sql to std-out
             addLogger(StdOutSqlLogger)
 
+            SchemaUtils.drop(Documents)
+
             SchemaUtils.create (Documents)
 
             // insert new document. SQL: INSERT INTO DOCUMENTS ("NAME", "PATH") VALUES ('Gas Bill 2023 April', 'c:/Documents/Gas/2023')
