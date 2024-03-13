@@ -14,7 +14,7 @@ class DocumentPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Document> {
-        return try {
+         return try {
             val offset = (params.key ?: 1).toLong()
 
             val documents = documentService.readPage(params.loadSize, offset) ?: emptyList()

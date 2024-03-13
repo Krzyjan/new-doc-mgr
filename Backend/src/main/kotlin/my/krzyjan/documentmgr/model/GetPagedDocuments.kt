@@ -24,7 +24,7 @@ class GetPagedDocuments @Inject constructor(
     }
 
     companion object {
-        private const val INITIAL_PAGE_KEY = 1
-        private const val PAGE_SIZE = 5
+        const val INITIAL_PAGE_KEY = 1
+        const val PAGE_SIZE = 5
     }
 }

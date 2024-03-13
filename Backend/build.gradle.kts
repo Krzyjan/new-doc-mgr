@@ -25,6 +25,8 @@ dependencies {
     testImplementation(testLibs.h2)
     testImplementation(testLibs.junit.jupiter.api)
     testImplementation(testLibs.junit.jupiter.engine)
+    testImplementation(testLibs.kotlinx.coroutines.test.jvm)
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
 
 defaultTasks("build")
