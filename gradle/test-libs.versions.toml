@@ -1,0 +1,16 @@
+[versions]
+kotlin = "1.8.0"
+kotlinx-coroutines = "1.7.3"
+jupiter = "5.9.2"
+springframework = "3.1.0"
+h2 = "2.1.214"
+
+[libraries]
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiter"}
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin"}
+kotlinx-coroutines-test-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm", version.ref = "kotlinx-coroutines"}
+h2 = { module = "com.h2database:h2", version.ref = "h2"}
+
+[bundles]
+[plugins]
