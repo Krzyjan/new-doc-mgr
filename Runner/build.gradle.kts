@@ -17,8 +17,8 @@ dependencies {
     implementation(project(":UserInterface"))
     api(libs.kodein.di)
     implementation(project(mapOf("path" to ":Backend")))
-    testImplementation(testLibs.junit.jupiter.api)
-    testRuntimeOnly(testLibs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 tasks.getByName<Test>("test") {

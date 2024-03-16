@@ -23,21 +23,3 @@ pluginManagement {
         kotlin("plugin.spring") version springPluginVersion
     }
 }
-
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("testLibs") {
-            version("kotlin", "1.8.0")
-            version("kotlinx-coroutines", "1.7.3")
-            version("jupiter", "5.9.2")
-            version("springframework", "3.1.0")
-            version("h2", "2.1.214")
-
-            library("junit-jupiter-api", "org.junit.jupiter", "junit-jupiter-api").versionRef("jupiter")
-            library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("jupiter")
-            library("kotlin-test", "org.jetbrains.kotlin", "kotlin-test").versionRef("kotlin")
-            library("kotlinx-coroutines-test-jvm", "org.jetbrains.kotlinx", "kotlinx-coroutines-test-jvm").versionRef("kotlinx-coroutines")
-            library("h2", "com.h2database", "h2").versionRef("h2")
-        }
-    }
-}

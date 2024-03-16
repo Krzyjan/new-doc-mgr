@@ -21,11 +21,11 @@ dependencies {
     implementation(libs.exposed.jdbc)
     implementation(libs.paging.common)
     implementation("javax.inject:javax.inject:1")
-    testImplementation(testLibs.kotlin.test)
-    testImplementation(testLibs.h2)
-    testImplementation(testLibs.junit.jupiter.api)
-    testImplementation(testLibs.junit.jupiter.engine)
-    testImplementation(testLibs.kotlinx.coroutines.test.jvm)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.h2)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.kotlinx.coroutines.test.jvm)
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
 
