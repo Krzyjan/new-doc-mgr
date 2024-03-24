@@ -1,6 +1,7 @@
 rootProject.name = "NewDocumentManager"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include("Backend", "UserInterface", "Runner")
+include(":Backend", ":Runner", ":composeApp")
 
 pluginManagement {
     repositories {
@@ -10,16 +11,19 @@ pluginManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 
-    val kotlinVersion: String by settings
-    val springVersion: String by settings
-    val composeVersion: String by settings
-    val springPluginVersion: String by settings
-
     plugins {
-        kotlin("jvm") version kotlinVersion
-        id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
-        id("org.springframework.boot") version springVersion
-        id("org.jetbrains.compose") version composeVersion
-        kotlin("plugin.spring") version springPluginVersion
+        kotlin("jvm") version "1.9.22"
+        id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
+        id("org.springframework.boot") version "3.1.0"
+        id("org.jetbrains.compose") version "1.6.2"
+        kotlin("plugin.spring") version "3.1.0"
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }

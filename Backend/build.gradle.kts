@@ -1,32 +1,29 @@
+
 plugins {
-    id("org.jetbrains.kotlin.plugin.allopen")
-    kotlin("jvm")
+    kotlin("jvm") version libs.versions.kotlin
+    alias(libs.plugins.kotlinAllOpen)
     application
 }
 
 group = "me.krzyjan.documentmgr"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
-
-dependencies {
-    implementation(libs.kotlin.reflect)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.exposed.core)
-    implementation(libs.exposed.dao)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.paging.common)
-    implementation("javax.inject:javax.inject:1")
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.h2)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.engine)
-    testImplementation(libs.kotlinx.coroutines.test.jvm)
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+kotlin {
+    dependencies {
+        implementation(libs.kotlin.reflect)
+        implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.exposed.core)
+        implementation(libs.exposed.dao)
+        implementation(libs.exposed.jdbc)
+        implementation(libs.paging.common)
+        implementation(libs.java.inject)
+        testImplementation(libs.kotlin.test)
+        testImplementation(libs.h2)
+        testImplementation(libs.junit.jupiter.api)
+        testImplementation(libs.junit.jupiter.engine)
+        testImplementation(libs.kotlinx.coroutines.test.jvm)
+        runtimeOnly(libs.kotlinx.coroutines.android)
+    }
 }
 
 defaultTasks("build")
