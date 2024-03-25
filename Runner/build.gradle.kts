@@ -1,11 +1,21 @@
 plugins {
     id("conventions")
-    kotlin("jvm")
+    kotlin("jvm") version libs.versions.kotlin
     application
 }
 
 group = "me.krzyjan.documentmgr"
 version = "unspecified"
+
+kotlin {
+    dependencies {
+        implementation(project(":composeApp"))
+        api(libs.kodein.di)
+        implementation(project(mapOf("path" to ":Backend")))
+        testImplementation(libs.junit.jupiter.api)
+        testRuntimeOnly(libs.junit.jupiter.engine)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -13,13 +23,6 @@ repositories {
     google()
 }
 
-dependencies {
-    implementation(project(":UserInterface"))
-    api(libs.kodein.di)
-    implementation(project(mapOf("path" to ":Backend")))
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-}
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
