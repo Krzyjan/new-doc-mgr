@@ -84,7 +84,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "composeApp"
+            packageName = "my.krzyjan.documentmgr"
             packageVersion = "1.0.0"
         }
     }

@@ -1,14 +1,10 @@
 package my.krzyjan.documentmgr
 
 import androidx.compose.foundation.clickable
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
