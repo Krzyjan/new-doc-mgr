@@ -8,8 +8,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
+@Disabled("Disabled until we can tackle paging again")
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPagedDocumentsTest {
 

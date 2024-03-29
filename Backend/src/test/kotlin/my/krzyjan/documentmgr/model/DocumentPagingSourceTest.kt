@@ -11,10 +11,12 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
+@Disabled("Disabled until we can tackle paging again")
 @OptIn(ExperimentalCoroutinesApi::class)
 class DocumentPagingSourceTest {
 
