@@ -80,7 +80,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "my.krzyjan.documentmgr.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
