@@ -12,8 +12,6 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm") version "1.9.22"
-        id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
         id("org.springframework.boot") version "3.1.0"
         id("org.jetbrains.compose") version "1.6.2"
         kotlin("plugin.spring") version "3.1.0"

@@ -1,12 +1,12 @@
 [versions]
-kotlin = "1.9.22"
-kotlinx-coroutines = "1.7.3"
-kodein = "7.18.0"
-jupiter = "5.9.2"
+kotlin = "1.9.23"
+kotlinx-coroutines = "1.8.0"
+kodein = "7.20.0"
+jupiter = "5.10.1"
 exposed = "0.41.1"
 paging = "3.2.1"
-h2 = "2.1.214"
-agp = "8.2.0"
+h2 = "2.2.224"
+agp = "8.3.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -18,14 +18,13 @@ androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
 compose = "1.6.2"
-compose-plugin = "1.6.0"
 spring="3.1.0"
 spring-plugin="1.8.21"
 java-inject = "1"
 
 
 [libraries]
-kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
+kodein-di-framework-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin"}
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines"}
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed"}
@@ -54,7 +53,8 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin"}
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
 springframeworkBoot = { id = "org.springframework.boot", version.ref = "spring"}

@@ -34,7 +34,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.kodein.di)
+            implementation(libs.kodein.di.framework.compose)
             implementation(project(":Backend"))
         }
         desktopMain.dependencies {
