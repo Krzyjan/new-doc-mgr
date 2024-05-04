@@ -9,14 +9,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import my.krzyjan.documentmgr.model.DocumentService
-import my.krzyjan.documentmgr.model.ExposedDocumentService
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
 
-val di = DI {
-    bindSingleton <DocumentService> { ExposedDocumentService() }
-}
 
 fun main() = application {
     Window(

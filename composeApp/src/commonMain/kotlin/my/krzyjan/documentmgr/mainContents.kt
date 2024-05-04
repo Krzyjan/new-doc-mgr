@@ -37,8 +37,15 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import my.krzyjan.documentmgr.model.Document
+import my.krzyjan.documentmgr.model.DocumentService
+import my.krzyjan.documentmgr.model.ExposedDocumentService
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
+import org.kodein.di.compose.withDI
 
-private val rootStore: RootStore = RootStore()
+private val rootStore: RootStore = RootStore(DI {
+    bindSingleton <DocumentService> { ExposedDocumentService() }
+})
 
 @Composable
 private fun documentList() {
@@ -166,6 +173,8 @@ fun rootContent(fillMaxSize: Modifier) {
 }
 
 @Composable
-fun mainView() = rootContent(Modifier.fillMaxSize())
+fun mainView() = withDI(rootStore.di) {
+    rootContent(Modifier.fillMaxSize())
+}
 
 

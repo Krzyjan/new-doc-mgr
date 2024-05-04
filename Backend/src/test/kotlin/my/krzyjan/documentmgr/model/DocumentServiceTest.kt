@@ -1,5 +1,6 @@
 package my.krzyjan.documentmgr.model
 
+import org.jetbrains.exposed.sql.Database
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -10,8 +11,21 @@ class DocumentServiceTest {
 
     @Test
     fun testCRUD() {
-        val documentService: DocumentService = ExposedDocumentService()
+        runCRUDTest(ExposedDocumentService.DBSettings.defaultDb)
+    }
 
+    private val nonDefaultDatabase: Database = Database.connect(
+        url = "jdbc:h2:mem:fred;DB_CLOSE_DELAY=-1",
+        driver = "org.h2.Driver"
+    )
+
+    @Test
+    fun testCRUDwithNonDefDb() {
+        runCRUDTest(nonDefaultDatabase)
+    }
+
+    private fun runCRUDTest(database: Database) {
+        val documentService: DocumentService = ExposedDocumentService(database)
         /*
         ** Test create
          */
@@ -44,6 +58,7 @@ class DocumentServiceTest {
         storedDocument = documentService.read(id)
 
         assertNull(storedDocument)
+
     }
 
     @Test

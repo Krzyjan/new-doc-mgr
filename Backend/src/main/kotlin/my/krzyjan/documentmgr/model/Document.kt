@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 data class Document(val name: String, val path: String)
 
-class ExposedDocumentService :DocumentService {
+class ExposedDocumentService(db:Database = defaultDb) :DocumentService {
     object Documents : Table() {
         val id = integer("id").autoIncrement()
         val name = varchar("name", length = 128)
@@ -19,7 +19,7 @@ class ExposedDocumentService :DocumentService {
     }
 
     companion object DBSettings {
-        val db by lazy {
+        val defaultDb by lazy {
             Database.connect(
                 url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
                 user = "root",

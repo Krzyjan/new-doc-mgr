@@ -18,7 +18,7 @@ kotlin {
         implementation(libs.paging.common)
         implementation(libs.java.inject)
         testImplementation(libs.kotlin.test)
-        testImplementation(libs.h2)
+        implementation(libs.h2)
         testImplementation(libs.junit.jupiter.api)
         testImplementation(libs.junit.jupiter.engine)
         testImplementation(libs.kotlinx.coroutines.test.jvm)

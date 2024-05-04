@@ -34,6 +34,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.exposed.core)
             implementation(libs.kodein.di.framework.compose)
             implementation(project(":Backend"))
         }

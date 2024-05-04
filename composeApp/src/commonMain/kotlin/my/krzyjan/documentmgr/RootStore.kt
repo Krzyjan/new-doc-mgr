@@ -4,8 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import my.krzyjan.documentmgr.model.Document
+import my.krzyjan.documentmgr.model.DocumentService
+import org.kodein.di.DI
+import org.kodein.di.instance
 
-internal class RootStore {
+internal class RootStore(val di: DI) {
+
+    val documentService:DocumentService by di.instance<DocumentService>()
+
     var state: RootState by mutableStateOf(initialState())
         private set
 
@@ -33,9 +39,7 @@ internal class RootStore {
 
     private fun initialState(): RootState =
         RootState(
-            items = (1L..5L).map { id ->
-                Document(name = "Document $id", path = "/documents/doc${id}")
-            }
+            items = documentService.readPage(5)?: emptyList()
         )
 
     private inline fun setState(update: RootState.() -> RootState) {
