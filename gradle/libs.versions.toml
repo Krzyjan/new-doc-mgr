@@ -6,7 +6,7 @@ jupiter = "5.10.1"
 exposed = "0.41.1"
 paging = "3.2.1"
 h2 = "2.2.224"
-agp = "8.3.2"
+agp = "8.4.1"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -21,6 +21,7 @@ compose = "1.6.2"
 spring="3.1.0"
 spring-plugin="1.8.21"
 java-inject = "1"
+hoplite = "2.7.5"
 
 
 [libraries]
@@ -47,6 +48,8 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 java-inject = { module = "javax.inject:javax.inject", version.ref = "java-inject"}
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines"}
+hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
+hoplite-hocon = { module = "com.sksamuel.hoplite:hoplite-hocon", version.ref = "hoplite" }
 
 [bundles]
 

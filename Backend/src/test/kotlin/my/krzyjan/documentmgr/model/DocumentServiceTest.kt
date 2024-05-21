@@ -11,7 +11,7 @@ class DocumentServiceTest {
 
     @Test
     fun testCRUD() {
-        runCRUDTest(ExposedDocumentService.DBSettings.defaultDb)
+        runCRUDTest(ExposedDocumentService.DbRunner.defaultDb)
     }
 
     private val nonDefaultDatabase: Database = Database.connect(

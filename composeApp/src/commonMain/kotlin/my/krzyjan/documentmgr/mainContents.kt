@@ -36,15 +36,29 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.sksamuel.hoplite.ConfigLoaderBuilder
+import com.sksamuel.hoplite.addResourceSource
 import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
 import my.krzyjan.documentmgr.model.ExposedDocumentService
+import org.jetbrains.exposed.sql.Database
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.compose.withDI
 
+private val applicationConfig =
+    ConfigLoaderBuilder.default().addResourceSource("/application-prod.conf").build()
+        .loadConfigOrThrow<ApplicationConfig>()
+
 private val rootStore: RootStore = RootStore(DI {
-    bindSingleton <DocumentService> { ExposedDocumentService() }
+    bindSingleton<DocumentService> {
+        val database: Database = Database.connect(
+            url = "jdbc:h2:${applicationConfig.database.path};DB_CLOSE_DELAY=-1",
+            driver = "org.h2.Driver",
+            user = applicationConfig.database.user
+        )
+        ExposedDocumentService(database)
+    }
 })
 
 @Composable

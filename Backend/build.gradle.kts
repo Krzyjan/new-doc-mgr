@@ -23,6 +23,9 @@ kotlin {
         testImplementation(libs.junit.jupiter.engine)
         testImplementation(libs.kotlinx.coroutines.test.jvm)
         runtimeOnly(libs.kotlinx.coroutines.android)
+        testImplementation(libs.hoplite.core)
+        testImplementation(libs.hoplite.hocon)
+        testImplementation(project(":composeApp"))
     }
 }
 

@@ -37,6 +37,8 @@ kotlin {
             implementation(libs.exposed.core)
             implementation(libs.kodein.di.framework.compose)
             implementation(project(":Backend"))
+            implementation(libs.hoplite.core)
+            implementation(libs.hoplite.hocon)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
