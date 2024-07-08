@@ -3,6 +3,7 @@ package my.krzyjan.documentmgr
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import my.krzyjan.documentmgr.RootStore.RootStoreConstants.INITIAL_PAGE_SIZE
 import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
 import org.kodein.di.DI
@@ -10,7 +11,11 @@ import org.kodein.di.instance
 
 internal class RootStore(val di: DI) {
 
-    val documentService:DocumentService by di.instance<DocumentService>()
+    companion object RootStoreConstants {
+        const val INITIAL_PAGE_SIZE = 5
+    }
+
+    private val documentService:DocumentService by di.instance<DocumentService>()
 
     var state: RootState by mutableStateOf(initialState())
         private set
@@ -39,7 +44,7 @@ internal class RootStore(val di: DI) {
 
     private fun initialState(): RootState =
         RootState(
-            items = documentService.readPage(5)?: emptyList()
+            items = documentService.readPage(INITIAL_PAGE_SIZE)?: emptyList()
         )
 
     private inline fun setState(update: RootState.() -> RootState) {
