@@ -3,7 +3,6 @@ package my.krzyjan.documentmgr
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import my.krzyjan.documentmgr.RootStore.RootStoreConstants.INITIAL_PAGE_SIZE
 import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
 import org.kodein.di.DI
