@@ -11,15 +11,15 @@ import org.kodein.di.instance
 internal class RootStore(val di: DI) {
 
     companion object RootStoreConstants {
-        const val INITIAL_PAGE_SIZE = 5
+        const val INITIAL_PAGE_SIZE = 20
     }
 
-    private val documentService:DocumentService by di.instance<DocumentService>()
+    private val documentService: DocumentService by di.instance<DocumentService>()
 
     var state: RootState by mutableStateOf(initialState())
         private set
 
-    fun onItemClicked(id: Long) {
+    fun onItemClicked(id: Int) {
         setState { copy(editingItemId = id) }
     }
 
@@ -27,6 +27,8 @@ internal class RootStore(val di: DI) {
         if (state.newName.isNotBlank() && state.newPath.isNotBlank()) {
             setState {
                 val newItem = Document(name = newName, path = newPath)
+
+                documentService.create(newItem)
 
                 copy(items = items + newItem, newName = "", newPath = "")
             }
@@ -43,7 +45,7 @@ internal class RootStore(val di: DI) {
 
     private fun initialState(): RootState =
         RootState(
-            items = documentService.readPage(INITIAL_PAGE_SIZE)?: emptyList()
+            items = documentService.readPage(INITIAL_PAGE_SIZE) ?: emptyList()
         )
 
     private inline fun setState(update: RootState.() -> RootState) {
@@ -52,7 +54,7 @@ internal class RootStore(val di: DI) {
 
     data class RootState(
         val items: List<Document> = emptyList(),
-        val editingItemId: Long? = null,
+        val editingItemId: Int? = null,
         val newName: String = "",
         val newPath: String = ""
     )
