@@ -8,7 +8,7 @@ import my.krzyjan.documentmgr.model.DocumentService
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-internal class ViewModel(val di: DI) {
+class ViewModel(val di: DI) {
 
     companion object RootStoreConstants {
         const val INITIAL_PAGE_SIZE = 20
