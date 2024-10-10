@@ -50,7 +50,7 @@ private val applicationConfig =
     ConfigLoaderBuilder.default().addResourceSource("/application-prod.conf").build()
         .loadConfigOrThrow<ApplicationConfig>()
 
-private val rootStore: RootStore = RootStore(DI {
+private val rootStore: ViewModel = ViewModel(DI {
     bindSingleton<DocumentService> {
         val database: Database = Database.connect(
             url = "jdbc:h2:${applicationConfig.database.path};DB_CLOSE_DELAY=-1",
@@ -62,14 +62,14 @@ private val rootStore: RootStore = RootStore(DI {
 })
 
 @Composable
-private fun documentList() {
+private fun documentListView() {
     TopAppBar(title = { Text(text = "Document List") })
 
-    listContent()
+    listContentView()
 }
 
 @Composable
-private fun listContent() {
+private fun listContentView() {
     val model = remember { rootStore }
 
     Box {
@@ -77,7 +77,7 @@ private fun listContent() {
 
         LazyColumn(state = listState) {
             items(model.state.items) {
-                item(it)
+                itemView(it)
                 Divider()
             }
         }
@@ -85,7 +85,7 @@ private fun listContent() {
 }
 
 @Composable
-private fun item(document: Document) {
+private fun itemView(document: Document) {
     Row(modifier = Modifier.clickable(onClick = { /* TODO */ })) {
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -120,7 +120,7 @@ internal fun Modifier.onKeyUp(key: Key, action: () -> Unit): Modifier =
     }
 
 @Composable
-private fun newDocument() {
+private fun newDocumentView() {
     val model = remember { rootStore }
 
     TopAppBar(title = { Text(text = "Add Document") })
@@ -131,8 +131,8 @@ private fun newDocument() {
             modifier = Modifier
                 .weight(weight = 1F)
                 .moveOnFocusTab()
-                .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
-            onValueChange = model::onNameChanged,
+                .onKeyUp(key = Key.Enter, action = model::addItem),
+            onValueChange = model::setName,
             label = { Text(text = "Document Name") }
         )
 
@@ -143,14 +143,14 @@ private fun newDocument() {
             modifier = Modifier
                 .weight(weight = 1F)
                 .moveOnFocusTab()
-                .onKeyUp(key = Key.Enter, action = model::onAddItemClicked),
-            onValueChange = model::onPathChanged,
+                .onKeyUp(key = Key.Enter, action = model::addItem),
+            onValueChange = model::setPath,
             label = { Text(text = "Document Path") }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = model::onAddItemClicked) {
+        IconButton(onClick = model::addItem) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null
@@ -174,16 +174,11 @@ internal fun Modifier.moveOnFocusTab() = composed {
 }
 
 @Composable
-fun mainContent(modifier: Modifier) {
-    Column(modifier) {
-        newDocument()
-        documentList()
-    }
-}
-
-@Composable
 fun rootContent(fillMaxSize: Modifier) {
-    mainContent(fillMaxSize)
+    Column(fillMaxSize) {
+        newDocumentView()
+        documentListView()
+    }
 }
 
 @Composable

@@ -8,7 +8,7 @@ import my.krzyjan.documentmgr.model.DocumentService
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-internal class RootStore(val di: DI) {
+internal class ViewModel(val di: DI) {
 
     companion object RootStoreConstants {
         const val INITIAL_PAGE_SIZE = 20
@@ -16,14 +16,14 @@ internal class RootStore(val di: DI) {
 
     private val documentService: DocumentService by di.instance<DocumentService>()
 
-    var state: RootState by mutableStateOf(initialState())
+    var state: ModelState by mutableStateOf(setInitialState())
         private set
 
     fun onItemClicked(id: Int) {
         setState { copy(editingItemId = id) }
     }
 
-    fun onAddItemClicked() {
+    fun addItem() {
         if (state.newName.isNotBlank() && state.newPath.isNotBlank()) {
             setState {
                 val newItem = Document(name = newName, path = newPath)
@@ -35,24 +35,24 @@ internal class RootStore(val di: DI) {
         }
     }
 
-    fun onNameChanged(text: String) {
+    fun setName(text: String) {
         setState { copy(newName = text) }
     }
 
-    fun onPathChanged(text: String) {
+    fun setPath(text: String) {
         setState { copy(newPath = text) }
     }
 
-    private fun initialState(): RootState =
-        RootState(
+    private fun setInitialState(): ModelState =
+        ModelState(
             items = documentService.readPage(INITIAL_PAGE_SIZE) ?: emptyList()
         )
 
-    private inline fun setState(update: RootState.() -> RootState) {
+    private inline fun setState(update: ModelState.() -> ModelState) {
         state = state.update()
     }
 
-    data class RootState(
+    data class ModelState(
         val items: List<Document> = emptyList(),
         val editingItemId: Int? = null,
         val newName: String = "",
