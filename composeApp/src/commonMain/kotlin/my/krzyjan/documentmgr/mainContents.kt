@@ -20,7 +20,7 @@ private val applicationConfig =
 private val rootStore: ViewModel = ViewModel(DI {
     bindSingleton<DocumentService> {
         val database: Database = Database.connect(
-            url = "jdbc:h2:${applicationConfig.database.path};DB_CLOSE_DELAY=-1",
+            url = "jdbc:h2:${applicationConfig.database.path};${applicationConfig.database.urlExtra};${applicationConfig.database.debug}",
             driver = "org.h2.Driver",
             user = applicationConfig.database.user
         )
