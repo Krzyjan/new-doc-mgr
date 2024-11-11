@@ -29,16 +29,11 @@ private val rootStore: ViewModel = ViewModel(DI {
 })
 
 @Composable
-fun rootContent(fillMaxSize: Modifier) {
-    Column(fillMaxSize) {
-        newDocumentView(rootStore)
-        documentListView(rootStore)
-    }
-}
-
-@Composable
 fun mainView() = withDI(rootStore.di) {
-    rootContent(Modifier.fillMaxSize())
+    Column(Modifier.fillMaxSize()) {
+        documentListView(rootStore)
+        newDocumentView(rootStore)
+    }
 }
 
 
