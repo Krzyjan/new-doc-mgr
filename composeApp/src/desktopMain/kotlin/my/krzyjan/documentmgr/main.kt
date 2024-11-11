@@ -15,6 +15,6 @@ fun main() = application {
             position = WindowPosition(alignment = Alignment.Center)
         ),
     ) {
-        application()
+        mainView()
     }
 }
