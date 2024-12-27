@@ -35,8 +35,8 @@ private fun listContentView(rootStore: ViewModel) {
         val listState = rememberLazyListState()
 
         LazyColumn(state = listState) {
-            items(model.state.items) {
-                itemView(it)
+            items(model.state.items) { document ->
+                itemView(document) { document.id?.let { id -> (model::onItemClicked)(id) } }
                 Divider()
             }
         }
@@ -44,8 +44,8 @@ private fun listContentView(rootStore: ViewModel) {
 }
 
 @Composable
-private fun itemView(document: Document) {
-    Row(modifier = Modifier.clickable(onClick = { /* TODO */ })) {
+private fun itemView(document: Document, onItemClicked: () -> Unit) {
+    Row(modifier = Modifier.clickable(onClick = onItemClicked)) {
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(

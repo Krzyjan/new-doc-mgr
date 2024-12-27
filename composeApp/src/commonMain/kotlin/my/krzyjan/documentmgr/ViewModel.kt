@@ -10,7 +10,7 @@ import org.kodein.di.instance
 
 class ViewModel(val di: DI) {
 
-    companion object RootStoreConstants {
+    companion object ViewModelConstants {
         const val INITIAL_PAGE_SIZE = 20
     }
 
@@ -28,7 +28,7 @@ class ViewModel(val di: DI) {
             setState {
                 val newItem = Document(name = newName, path = newPath)
 
-                documentService.create(newItem)
+                newItem.id = documentService.create(newItem)
 
                 copy(items = items + newItem, newName = "", newPath = "")
             }
@@ -51,6 +51,28 @@ class ViewModel(val di: DI) {
     private inline fun setState(update: ModelState.() -> ModelState) {
         state = state.update()
     }
+
+    fun onEditorCloseClicked() {
+        setState { copy(editingItemId = null) }
+    }
+
+    fun onEditorNameChanged(name: String) {
+        setState {
+            updateItem(id = requireNotNull(editingItemId)) { it.copy(name = name) }
+        }
+    }
+
+    fun onEditorPathChanged(path: String) {
+        setState {
+            updateItem(id = requireNotNull(editingItemId)) { it.copy(path = path) }
+        }
+    }
+
+    private fun ModelState.updateItem(id: Int, transformer: (Document) -> Document): ModelState =
+        copy(items = items.updateItem(id = id, transformer = transformer))
+
+    private fun List<Document>.updateItem(id: Int, transformer: (Document) -> Document): List<Document> =
+        map { item -> if (item.id == id) transformer(item) else item }
 
     data class ModelState(
         val items: List<Document> = emptyList(),

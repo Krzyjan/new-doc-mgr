@@ -1,11 +1,27 @@
 package my.krzyjan.documentmgr
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceSource
+import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
 import my.krzyjan.documentmgr.model.ExposedDocumentService
 import org.jetbrains.exposed.sql.Database
@@ -30,10 +46,76 @@ private val rootStore: ViewModel = ViewModel(DI {
 
 @Composable
 fun mainView() = withDI(rootStore.di) {
-    Column(Modifier.fillMaxSize()) {
+    val model = remember { rootStore }
+    val state = model.state
+
+    Column(Modifier.background(MaterialTheme.colors.background)) {
         documentListView(rootStore)
         newDocumentView(rootStore)
     }
+
+    state.editingItem?.also { item ->
+        EditDialog(
+            item = item,
+            onCloseClicked = model::onEditorCloseClicked,
+            onNameChanged = model::onEditorNameChanged,
+            onPathChanged = model::onEditorPathChanged
+        )
+    }
 }
+
+@Composable
+internal fun EditDialog(
+    item: Document, onCloseClicked: () -> Unit,
+    onNameChanged: (String) -> Unit,
+    onPathChanged: (String) -> Unit)
+{
+    println("item = $item")
+    Dialog(onDismissRequest = onCloseClicked) {
+        Card(elevation = 8.dp) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(IntrinsicSize.Min)
+            ) {
+                Box(modifier = Modifier.weight(1F)) {
+                    Column(horizontalAlignment = Alignment.Start) {
+                        TextField(
+                            value = item.name,
+                            label = { Text("Document Name") },
+                            onValueChange = onNameChanged
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextField(
+                            value = item.path,
+                            label = { Text("Document Path") },
+                            onValueChange = onPathChanged
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = onCloseClicked,
+                            modifier = Modifier.align(Alignment.End)
+                        ) {
+                            Text("Done")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private val ViewModel.ModelState.editingItem: Document?
+    get() = editingItemId?.let(items::firstById)
+
+private fun List<Document>.firstById(id: Int): Document? =
+    firstOrNull { it.id == id }
+
+
+
 
 
