@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-data class Document(var id: Int? = null, val name: String, val path: String)
+data class Document(var id: Int? = null, val name: String, var path: String)
 
 class ExposedDocumentService(db: Database = defaultDb) : DocumentService {
     object Documents : Table() {

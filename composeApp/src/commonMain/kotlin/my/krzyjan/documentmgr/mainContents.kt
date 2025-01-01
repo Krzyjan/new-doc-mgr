@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -14,6 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,7 +70,9 @@ internal fun EditDialog(
     onNameChanged: (String) -> Unit,
     onPathChanged: (String) -> Unit)
 {
-    println("item = $item")
+    val filePicker = FilePicker()
+    val selectedFile by filePicker.rememberFilePicker()
+
     Dialog(onDismissRequest = onCloseClicked) {
         Card(elevation = 8.dp) {
             Column(
@@ -95,6 +97,12 @@ internal fun EditDialog(
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(onClick = { filePicker.launchFilePicker() }){
+                            Text("Select File")
+                        }
+
+                        selectedFile?.let { onPathChanged(it) }
 
                         Button(
                             onClick = onCloseClicked,
