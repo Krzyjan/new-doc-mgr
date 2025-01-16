@@ -57,23 +57,18 @@ fun mainView() = withDI(rootStore.di) {
     state.editingItem?.also { item ->
         EditDialog(
             item = item,
-            onCloseClicked = model::onEditorCloseClicked,
-            onNameChanged = model::onEditorNameChanged,
-            onPathChanged = model::onEditorPathChanged
+            model = model
         )
     }
 }
 
 @Composable
 internal fun EditDialog(
-    item: Document, onCloseClicked: () -> Unit,
-    onNameChanged: (String) -> Unit,
-    onPathChanged: (String) -> Unit)
+    item: Document,
+    model: ViewModel
+)
 {
-    val filePicker = FilePicker()
-    val selectedFile by filePicker.rememberFilePicker()
-
-    Dialog(onDismissRequest = onCloseClicked) {
+    Dialog(onDismissRequest = model::onEditorCloseClicked) {
         Card(elevation = 8.dp) {
             Column(
                 modifier = Modifier
@@ -85,7 +80,7 @@ internal fun EditDialog(
                         TextField(
                             value = item.name,
                             label = { Text("Document Name") },
-                            onValueChange = onNameChanged
+                            onValueChange = model::onEditorNameChanged
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -93,19 +88,17 @@ internal fun EditDialog(
                         TextField(
                             value = item.path,
                             label = { Text("Document Path") },
-                            onValueChange = onPathChanged
+                            onValueChange = model::onEditorPathChanged
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(onClick = { filePicker.launchFilePicker() }){
+                        Button(onClick = model::onSelectFile) {
                             Text("Select File")
                         }
 
-                        selectedFile?.let { onPathChanged(it) }
-
                         Button(
-                            onClick = onCloseClicked,
+                            onClick = model::onEditorCloseClicked,
                             modifier = Modifier.align(Alignment.End)
                         ) {
                             Text("Done")
@@ -115,6 +108,13 @@ internal fun EditDialog(
             }
         }
     }
+    model.state.selectingFile?.also {
+        val filePicker = FilePicker()
+        val selectedFile by filePicker.rememberFilePicker()
+
+        filePicker.launchFilePicker()
+        selectedFile?.let { (model::onEditorPathChanged)(it) }
+    }.apply { (model::clearSelectingFile)() }
 }
 
 private val ViewModel.ModelState.editingItem: Document?

@@ -15,6 +15,7 @@ actual class FilePicker {
         return selectedFile
     }
 
+    @Composable
     actual fun launchFilePicker() {
         val fileChooser = JFileChooser().apply {
             fileSelectionMode = JFileChooser.FILES_ONLY

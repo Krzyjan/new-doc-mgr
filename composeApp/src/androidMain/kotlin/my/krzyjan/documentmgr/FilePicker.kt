@@ -21,6 +21,7 @@ actual class FilePicker {
         return selectedFile
     }
 
+    @Composable
     actual fun launchFilePicker() {
         val context = LocalContext.current
         val filePickerLauncher = rememberLauncherForActivityResult(

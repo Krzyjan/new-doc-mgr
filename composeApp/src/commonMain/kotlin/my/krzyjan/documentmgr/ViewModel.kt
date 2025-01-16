@@ -68,6 +68,14 @@ class ViewModel(val di: DI) {
         }
     }
 
+    fun onSelectFile() {
+        setState { copy(selectingFile = true) }
+    }
+
+    fun clearSelectingFile() {
+        setState { copy(selectingFile = null)}
+    }
+
     private fun ModelState.updateItem(id: Int, transformer: (Document) -> Document): ModelState =
         copy(items = items.updateItem(id = id, transformer = transformer))
 
@@ -78,7 +86,8 @@ class ViewModel(val di: DI) {
         val items: List<Document> = emptyList(),
         val editingItemId: Int? = null,
         val newName: String = "",
-        val newPath: String = ""
+        val newPath: String = "",
+        val selectingFile: Boolean? = null
     )
 }
 

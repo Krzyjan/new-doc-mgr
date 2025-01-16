@@ -7,5 +7,6 @@ expect class FilePicker() {
     @Composable
     fun rememberFilePicker(): MutableState<String?>
 
+    @Composable
     fun launchFilePicker()
 }
