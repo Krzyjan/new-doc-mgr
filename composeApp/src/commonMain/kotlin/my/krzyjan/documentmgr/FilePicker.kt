@@ -3,10 +3,9 @@ package my.krzyjan.documentmgr
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 
-expect class FilePicker() {
-    @Composable
-    fun rememberFilePicker(): MutableState<String?>
+@Composable
+expect fun rememberFilePicker(): MutableState<String?>
 
-    @Composable
-    fun launchFilePicker()
-}
+@Composable
+expect fun launchFilePicker()
+

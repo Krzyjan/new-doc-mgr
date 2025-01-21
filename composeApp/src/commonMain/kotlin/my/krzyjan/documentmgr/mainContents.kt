@@ -109,10 +109,9 @@ internal fun EditDialog(
         }
     }
     model.state.selectingFile?.also {
-        val filePicker = FilePicker()
-        val selectedFile by filePicker.rememberFilePicker()
+        val selectedFile by rememberFilePicker()
 
-        filePicker.launchFilePicker()
+        launchFilePicker()
         selectedFile?.let { (model::onEditorPathChanged)(it) }
     }.apply { (model::clearSelectingFile)() }
 }
