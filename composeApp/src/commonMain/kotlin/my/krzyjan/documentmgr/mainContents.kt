@@ -93,7 +93,11 @@ internal fun EditDialog(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(onClick = model::onSelectFile) {
+                        val selectedFile by rememberFilePicker()
+                        Button(onClick = {
+                            launchFilePicker()
+                            selectedFile?.let { (model::onEditorPathChanged)(it) }
+                        }) {
                             Text("Select File")
                         }
 
@@ -108,12 +112,6 @@ internal fun EditDialog(
             }
         }
     }
-    model.state.selectingFile?.also {
-        val selectedFile by rememberFilePicker()
-
-        launchFilePicker()
-        selectedFile?.let { (model::onEditorPathChanged)(it) }
-    }.apply { (model::clearSelectingFile)() }
 }
 
 private val ViewModel.ModelState.editingItem: Document?

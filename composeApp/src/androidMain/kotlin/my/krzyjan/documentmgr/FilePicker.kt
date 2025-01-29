@@ -3,6 +3,7 @@ package my.krzyjan.documentmgr
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,17 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
 private lateinit var selectedFile: MutableState<String?>
+private lateinit var filePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
 @Composable
 actual fun rememberFilePicker(): MutableState<String?> {
     selectedFile = remember { mutableStateOf(null) }
-    return selectedFile
-}
-
-@Composable
-actual fun launchFilePicker() {
     val context = LocalContext.current
-    val filePickerLauncher = rememberLauncherForActivityResult(
+    filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -31,6 +28,10 @@ actual fun launchFilePicker() {
             selectedFile.value = uri?.let { getPathFromUri(context, it) }
         }
     }
+    return selectedFile
+}
+
+actual fun launchFilePicker() {
 
     val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"

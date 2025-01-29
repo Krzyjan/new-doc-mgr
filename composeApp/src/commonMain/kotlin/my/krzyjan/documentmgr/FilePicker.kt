@@ -6,6 +6,5 @@ import androidx.compose.runtime.MutableState
 @Composable
 expect fun rememberFilePicker(): MutableState<String?>
 
-@Composable
 expect fun launchFilePicker()
 
