@@ -13,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,10 +92,9 @@ internal fun EditDialog(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        val selectedFile by rememberFilePicker()
+                        registerPathChanger(model::onEditorPathChanged)
                         Button(onClick = {
                             launchFilePicker()
-                            selectedFile?.let { (model::onEditorPathChanged)(it) }
                         }) {
                             Text("Select File")
                         }
