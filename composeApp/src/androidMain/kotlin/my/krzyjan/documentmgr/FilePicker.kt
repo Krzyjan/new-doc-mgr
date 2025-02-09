@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -18,14 +19,14 @@ import java.io.IOException
 private lateinit var filePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
 @Composable
-actual fun registerPathChanger(changeDocumentPath: (String) -> Unit) {
+actual fun registerPathChanger(onFileSelected: (String) -> Unit) {
     val context = LocalContext.current
     filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
-            uri?.let { getFileFromUri(context, it)?.name }?.let { changeDocumentPath(it) }
+            uri?.let { getFileFromUri(context, it)?.name }?.let { onFileSelected(it) }
         }
     }
 }
@@ -57,7 +58,7 @@ private fun getFileFromUri(context: Context, uri: Uri): File? {
             }
             return file
         } catch (e: IOException) {
-            e.printStackTrace()
+            Log.e("getFileFromUri", "${e.stackTrace}")
         }
     }
     return null
