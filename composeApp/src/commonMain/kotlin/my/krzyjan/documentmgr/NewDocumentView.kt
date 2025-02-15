@@ -12,7 +12,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -52,37 +51,42 @@ internal fun Modifier.moveOnFocusTab() = composed {
 }
 
 @Composable
-fun newDocumentView(rootStore: ViewModel) {
-    val model = remember { rootStore }
+fun newDocumentView(
+    state: ViewModel.ModelState,
+    setName: (String) -> Unit,
+    setPath: (String) -> Unit,
+    addItem: () -> Unit
+)
+{
 
     TopAppBar(title = { Text(text = "Add Document") })
 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
         OutlinedTextField(
-            value = model.state.newName,
+            value = state.newName,
             modifier = Modifier
                 .weight(weight = 1F)
                 .moveOnFocusTab()
-                .onKeyUp(key = Key.Enter, action = model::addItem),
-            onValueChange = model::setName,
+                .onKeyUp(key = Key.Enter, action = addItem),
+            onValueChange = setName,
             label = { Text(text = "Document Name") }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         OutlinedTextField(
-            value = model.state.newPath,
+            value = state.newPath,
             modifier = Modifier
                 .weight(weight = 1F)
                 .moveOnFocusTab()
-                .onKeyUp(key = Key.Enter, action = model::addItem),
-            onValueChange = model::setPath,
+                .onKeyUp(key = Key.Enter, action = addItem),
+            onValueChange = setPath,
             label = { Text(text = "Document Path") }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = model::addItem) {
+        IconButton(onClick = addItem) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null

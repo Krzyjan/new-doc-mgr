@@ -12,7 +12,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -21,22 +20,20 @@ import androidx.compose.ui.unit.dp
 import my.krzyjan.documentmgr.model.Document
 
 @Composable
-fun documentListView(rootStore: ViewModel) {
+fun documentListView(documents: List<Document>, onItemClicked: (Int) -> Unit) {
     TopAppBar(title = { Text(text = "Document List") })
 
-    listContentView(rootStore)
+    listContentView(documents, onItemClicked)
 }
 
 @Composable
-private fun listContentView(rootStore: ViewModel) {
-    val model = remember { rootStore }
-
+private fun listContentView(documents: List<Document>, onItemClicked: (Int) -> Unit) {
     Box {
         val listState = rememberLazyListState()
 
         LazyColumn(state = listState) {
-            items(model.state.items) { document ->
-                itemView(document) { document.id?.let { id -> (model::onItemClicked)(id) } }
+            items(documents) { document ->
+                itemView(document) { document.id?.let { id -> (onItemClicked)(id) } }
                 Divider()
             }
         }

@@ -49,14 +49,16 @@ fun mainView() = withDI(rootStore.di) {
     val state = model.state
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        documentListView(rootStore)
-        newDocumentView(rootStore)
+        documentListView(state.items, model::onItemClicked)
+        newDocumentView(state, model::setName, model::setPath, model::addItem)
     }
 
     state.editingItem?.also { item ->
         EditDialog(
             item = item,
-            model = model
+            model::onEditorCloseClicked,
+            model::onEditorNameChanged,
+            model::onEditorPathChanged
         )
     }
 }
@@ -64,10 +66,12 @@ fun mainView() = withDI(rootStore.di) {
 @Composable
 internal fun EditDialog(
     item: Document,
-    model: ViewModel
+    onEditorCloseClicked: () -> Unit,
+    onEditorNameChanged: (String) -> Unit,
+    onEditorPathChanged: (String) -> Unit
 )
 {
-    Dialog(onDismissRequest = model::onEditorCloseClicked) {
+    Dialog(onDismissRequest = onEditorCloseClicked) {
         Card(elevation = 8.dp) {
             Column(
                 modifier = Modifier
@@ -79,7 +83,7 @@ internal fun EditDialog(
                         TextField(
                             value = item.name,
                             label = { Text("Document Name") },
-                            onValueChange = model::onEditorNameChanged
+                            onValueChange = onEditorNameChanged
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
@@ -87,12 +91,12 @@ internal fun EditDialog(
                         TextField(
                             value = item.path,
                             label = { Text("Document Path") },
-                            onValueChange = model::onEditorPathChanged
+                            onValueChange = onEditorPathChanged
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        registerPathChanger(model::onEditorPathChanged)
+                        registerPathChanger(onEditorPathChanged)
                         Button(onClick = {
                             launchFilePicker()
                         }) {
@@ -100,7 +104,7 @@ internal fun EditDialog(
                         }
 
                         Button(
-                            onClick = model::onEditorCloseClicked,
+                            onClick = onEditorCloseClicked,
                             modifier = Modifier.align(Alignment.End)
                         ) {
                             Text("Done")
