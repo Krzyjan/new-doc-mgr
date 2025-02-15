@@ -33,22 +33,24 @@ actual fun registerPathChanger(onFileSelected: (String) -> Unit) {
 
 actual fun launchFilePicker() {
 
-    val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
         type = "application/pdf"
     }
     filePickerLauncher.launch(intent)
 }
 
+private const val READ_BUFFER_SIZE = 4 * 1024
+
 private fun getFileFromUri(context: Context, uri: Uri): File? {
     if (uri.scheme == "content") {
         val contentResolver = context.contentResolver
         val fileName = getFileName(contentResolver, uri) ?: return null
-        val file = File(context.cacheDir, fileName)
+        val file = File(context.dataDir, fileName)
 
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 FileOutputStream(file).use { outputStream ->
-                    val buffer = ByteArray(4 * 1024) // 4KB buffer
+                    val buffer = ByteArray(READ_BUFFER_SIZE) // 4KB buffer
                     var read: Int
                     while (inputStream.read(buffer).also { read = it } != -1) {
                         outputStream.write(buffer, 0, read)
