@@ -23,6 +23,20 @@ class ViewModel(val di: DI) {
         setState { copy(editingItemId = id) }
     }
 
+    fun onDeleteItemClicked(id: Int) {
+        setState { copy(itemToDeleteId = id) }
+    }
+
+    fun onDeleteItemConfirmed() {
+        setState {
+            copy(items = items.filterNot { it.id == itemToDeleteId }, itemToDeleteId = null)
+        }
+    }
+
+    fun onDeleteItemCancelled() {
+        setState { copy(itemToDeleteId = null) }
+    }
+
     fun addItem() {
         if (state.newName.isNotBlank() && state.newPath.isNotBlank()) {
             setState {
@@ -77,6 +91,7 @@ class ViewModel(val di: DI) {
     data class ModelState(
         val items: List<Document> = emptyList(),
         val editingItemId: Int? = null,
+        val itemToDeleteId: Int? = null,
         val newName: String = "",
         val newPath: String = ""
     )

@@ -9,8 +9,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,20 +24,23 @@ import androidx.compose.ui.unit.dp
 import my.krzyjan.documentmgr.model.Document
 
 @Composable
-fun documentListView(documents: List<Document>, onItemClicked: (Int) -> Unit) {
+fun documentListView(
+    documents: List<Document>,
+    onItemClicked: (Int) -> Unit,
+    onDeleteItemClicked: (Int) -> Unit
+) {
     TopAppBar(title = { Text(text = "Document List") })
 
-    listContentView(documents, onItemClicked)
-}
-
-@Composable
-private fun listContentView(documents: List<Document>, onItemClicked: (Int) -> Unit) {
     Box {
         val listState = rememberLazyListState()
 
         LazyColumn(state = listState) {
             items(documents) { document ->
-                itemView(document) { document.id?.let { id -> (onItemClicked)(id) } }
+                itemView(
+                    document,
+                    onItemClicked = { document.id?.let { id -> (onItemClicked)(id) } },
+                    onDeleteClicked = { document.id?.let { id -> (onDeleteItemClicked)(id) } }
+                )
                 Divider()
             }
         }
@@ -41,7 +48,7 @@ private fun listContentView(documents: List<Document>, onItemClicked: (Int) -> U
 }
 
 @Composable
-private fun itemView(document: Document, onItemClicked: () -> Unit) {
+private fun itemView(document: Document, onItemClicked: () -> Unit, onDeleteClicked: () -> Unit) {
     Row(modifier = Modifier.clickable(onClick = onItemClicked)) {
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -62,6 +69,13 @@ private fun itemView(document: Document, onItemClicked: () -> Unit) {
         )
 
         Spacer(modifier = Modifier.width(8.dp))
+
+        IconButton(onClick = onDeleteClicked) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null
+            )
+        }
     }
 }
 

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -49,7 +51,7 @@ fun mainView() = withDI(rootStore.di) {
     val state = model.state
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        documentListView(state.items, model::onItemClicked)
+        documentListView(state.items, model::onItemClicked, model::onDeleteItemClicked)
         newDocumentView(state, model::setName, model::setPath, model::addItem)
     }
 
@@ -61,6 +63,57 @@ fun mainView() = withDI(rootStore.di) {
             model::onEditorPathChanged
         )
     }
+
+    state.deletedItem?.also { item ->
+        DeleteDialog(
+            name = item.name,
+            model::onDeleteItemConfirmed,
+            model::onDeleteItemCancelled
+        )
+    }
+}
+
+@Composable
+fun DeleteDialog(
+    name: String,
+    onDeleteItemConfirmed: () -> Unit,
+    onDeleteItemCancelled: () -> Unit
+) {
+    Dialog(onDismissRequest = onDeleteItemCancelled) {
+        Card(elevation = 8.dp) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(IntrinsicSize.Min)
+            ) {
+                Box(modifier = Modifier.weight(1F)) {
+                    ProvideTextStyle(MaterialTheme.typography.caption) {
+                        Text(text = "Delete $name document?")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column {
+                    Button(
+                        onClick = onDeleteItemConfirmed,
+                        modifier = Modifier.align(Alignment.Start)
+                    ) {
+                        Text("Yes")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = onDeleteItemCancelled,
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text("No")
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -69,8 +122,7 @@ internal fun EditDialog(
     onEditorCloseClicked: () -> Unit,
     onEditorNameChanged: (String) -> Unit,
     onEditorPathChanged: (String) -> Unit
-)
-{
+) {
     Dialog(onDismissRequest = onEditorCloseClicked) {
         Card(elevation = 8.dp) {
             Column(
@@ -118,6 +170,9 @@ internal fun EditDialog(
 
 private val ViewModel.ModelState.editingItem: Document?
     get() = editingItemId?.let(items::firstById)
+
+private val ViewModel.ModelState.deletedItem: Document?
+    get() = itemToDeleteId?.let(items::firstById)
 
 private fun List<Document>.firstById(id: Int): Document? =
     firstOrNull { it.id == id }
