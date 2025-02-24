@@ -16,6 +16,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -153,10 +157,14 @@ internal fun EditDialog(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         registerPathChanger(onEditorPathChanged)
-                        Button(onClick = {
+
+                        IconButton(onClick = {
                             launchFilePicker()
                         }) {
-                            Text("Select File")
+                            Icon(
+                                Icons.Filled.FileOpen,
+                                contentDescription ="Select File"
+                            )
                         }
 
                         Button(

@@ -40,6 +40,8 @@ kotlin {
             implementation(project(":Backend"))
             implementation(libs.hoplite.core)
             implementation(libs.hoplite.hocon)
+            implementation(libs.androidx.material3.android)
+            implementation(libs.material.icons.extended)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -80,7 +82,6 @@ android {
         debugImplementation(libs.compose.ui.tooling)
     }
 }
-
 
 compose.desktop {
     application {
