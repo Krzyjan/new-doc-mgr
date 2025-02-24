@@ -45,7 +45,9 @@ private fun getFileFromUri(context: Context, uri: Uri): File? {
     if (uri.scheme == "content") {
         val contentResolver = context.contentResolver
         val fileName = getFileName(contentResolver, uri) ?: return null
-        val file = File(context.dataDir, fileName)
+        val file = File(context.filesDir.absolutePath, fileName)
+
+        // On Android we store the document in the app persistent storage
 
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -81,4 +83,3 @@ private fun getFileName(contentResolver: android.content.ContentResolver, uri: U
     }
     return result
 }
-
