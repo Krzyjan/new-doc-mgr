@@ -151,21 +151,22 @@ internal fun EditDialog(
                         TextField(
                             value = item.path,
                             label = { Text("Document Path") },
-                            onValueChange = onEditorPathChanged
+                            onValueChange = onEditorPathChanged,
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    launchFilePicker()
+                                }) {
+                                    Icon(
+                                        Icons.Filled.FileOpen,
+                                        contentDescription = "Select File"
+                                    )
+                                }
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         registerPathChanger(onEditorPathChanged)
-
-                        IconButton(onClick = {
-                            launchFilePicker()
-                        }) {
-                            Icon(
-                                Icons.Filled.FileOpen,
-                                contentDescription ="Select File"
-                            )
-                        }
 
                         Button(
                             onClick = onEditorCloseClicked,
