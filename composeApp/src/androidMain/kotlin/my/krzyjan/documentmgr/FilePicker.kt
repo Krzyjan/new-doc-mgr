@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.jvm.Throws
 
 private lateinit var filePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
@@ -26,7 +27,7 @@ actual fun registerPathChanger(onFileSelected: (String) -> Unit) {
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
-            uri?.let { getFileFromUri(context, it)?.name }?.let { onFileSelected(it) }
+            uri?.let { downloadFile(context, it)?.name }?.let { onFileSelected(it) }
         }
     }
 }
@@ -39,31 +40,34 @@ actual fun launchFilePicker() {
     filePickerLauncher.launch(intent)
 }
 
-private const val READ_BUFFER_SIZE = 4 * 1024
+private const val READ_BUFFER_SIZE = 8 * 1024
 
-private fun getFileFromUri(context: Context, uri: Uri): File? {
+@Throws(IOException::class)
+private fun downloadFile(context: Context, uri: Uri): File? {
     if (uri.scheme == "content") {
         val contentResolver = context.contentResolver
-        val fileName = getFileName(contentResolver, uri) ?: return null
+        val fileName =
+            requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
         val file = File(context.filesDir.absolutePath, fileName)
+        if (file.exists()) {
+            throw IOException("File already exists: ${file.absolutePath}")
+        }
 
         // On Android we store the document in the app persistent storage
 
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 FileOutputStream(file).use { outputStream ->
-                    val buffer = ByteArray(READ_BUFFER_SIZE) // 4KB buffer
-                    var read: Int
-                    while (inputStream.read(buffer).also { read = it } != -1) {
-                        outputStream.write(buffer, 0, read)
-                    }
-                    outputStream.flush()
+                    inputStream.copyTo(outputStream, bufferSize = READ_BUFFER_SIZE)
                 }
             }
             return file
         } catch (e: IOException) {
             Log.e("getFileFromUri", "${e.stackTrace}")
+            throw e
         }
+    } else {
+        throw IllegalArgumentException("Unsupported URI scheme: ${uri.scheme}")
     }
     return null
 }
