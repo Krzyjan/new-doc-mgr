@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,6 +75,8 @@ fun newDocumentView(
 
         Spacer(modifier = Modifier.width(8.dp))
 
+        registerPathChanger(setPath)
+
         OutlinedTextField(
             value = state.newPath,
             modifier = Modifier
@@ -81,7 +84,17 @@ fun newDocumentView(
                 .moveOnFocusTab()
                 .onKeyUp(key = Key.Enter, action = addItem),
             onValueChange = setPath,
-            label = { Text(text = "Document Path") }
+            label = { Text(text = "Document Path") },
+            trailingIcon = {
+                androidx.compose.material3.IconButton(onClick = {
+                    launchFilePicker()
+                }) {
+                    androidx.compose.material3.Icon(
+                        Icons.Filled.FileOpen,
+                        contentDescription = "Select File"
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.width(8.dp))
