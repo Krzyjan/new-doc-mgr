@@ -10,6 +10,8 @@ plugins {
 group = "my.krzyjan.documentmgr"
 version = "1.0-SNAPSHOT"
 
+val buildType = project.findProperty("buildType") as? String ?: "debug"
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -50,6 +52,8 @@ kotlin {
 }
 
 android {
+    android.buildFeatures.buildConfig = true
+
     namespace = "my.krzyjan.documentmgr"
     compileSdk = 35
 
@@ -72,6 +76,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            buildConfigField("Boolean", "IS_DEBUG", "false")
+        }
+        getByName("debug") {
+            buildConfigField("Boolean", "IS_DEBUG", "true")
         }
     }
     compileOptions {

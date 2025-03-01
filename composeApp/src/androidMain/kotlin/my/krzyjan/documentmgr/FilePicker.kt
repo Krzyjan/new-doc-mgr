@@ -49,7 +49,8 @@ private fun downloadFile(context: Context, uri: Uri): File? {
         val fileName =
             requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
         val file = File(context.filesDir.absolutePath, fileName)
-        if (file.exists()) {
+
+        if (file.exists() && !BuildConfig.IS_DEBUG) {
             throw IOException("File already exists: ${file.absolutePath}")
         }
 
