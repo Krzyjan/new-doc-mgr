@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.OpenWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +28,8 @@ import my.krzyjan.documentmgr.model.Document
 fun documentListView(
     documents: List<Document>,
     onItemClicked: (Int) -> Unit,
-    onDeleteItemClicked: (Int) -> Unit
+    onDeleteItemClicked: (Int) -> Unit,
+    onFileOpenClicked: (String) -> Unit
 ) {
     TopAppBar(title = { Text(text = "Document List") })
 
@@ -39,7 +41,8 @@ fun documentListView(
                 itemView(
                     document,
                     onItemClicked = { document.id?.let { id -> (onItemClicked)(id) } },
-                    onDeleteClicked = { document.id?.let { id -> (onDeleteItemClicked)(id) } }
+                    onDeleteClicked = { document.id?.let { id -> (onDeleteItemClicked)(id) } },
+                    onFileOpenClicked = { onFileOpenClicked(document.path) }
                 )
                 Divider()
             }
@@ -48,7 +51,12 @@ fun documentListView(
 }
 
 @Composable
-private fun itemView(document: Document, onItemClicked: () -> Unit, onDeleteClicked: () -> Unit) {
+private fun itemView(
+    document: Document,
+    onItemClicked: () -> Unit,
+    onDeleteClicked: () -> Unit,
+    onFileOpenClicked: () -> Unit
+) {
     Row(modifier = Modifier.clickable(onClick = onItemClicked)) {
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -70,10 +78,19 @@ private fun itemView(document: Document, onItemClicked: () -> Unit, onDeleteClic
 
         Spacer(modifier = Modifier.width(8.dp))
 
+        IconButton(onClick = onFileOpenClicked) {
+            Icon(
+                imageVector = Icons.Default.OpenWith,
+                contentDescription = "Open file"
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
         IconButton(onClick = onDeleteClicked) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = null
+                contentDescription = "Delete File"
             )
         }
     }

@@ -58,10 +58,16 @@ private val rootStore: ViewModel = ViewModel(DI {
 @Composable
 fun mainView() = withDI(rootStore.di) {
     val model = remember { rootStore }
+    val fileOpenerModel = FileOpenerModel()
     val state = model.state
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        documentListView(state.items, model::onItemClicked, model::onDeleteItemClicked)
+        documentListView(
+            state.items,
+            model::onItemClicked,
+            model::onDeleteItemClicked,
+            fileOpenerModel::handleFile
+        )
         newDocumentView(state, model::setName, model::setPath, model::addItem)
     }
 
