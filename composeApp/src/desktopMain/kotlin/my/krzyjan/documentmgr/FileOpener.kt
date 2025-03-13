@@ -1,14 +1,19 @@
 package my.krzyjan.documentmgr
 
 
+import androidx.compose.runtime.Composable
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
 
 actual class FileOpener actual constructor() {
-    actual fun openFile(fileUri: String, mimeType: String) {
+
+    @Composable
+    actual fun initOpener() {}
+
+    actual fun openFile(fileName: String, mimeType: String) {
         try {
-            val file = File(URI(fileUri))
+            val file = File(URI(fileName))
             if (Desktop.isDesktopSupported()) {
                 val desktop = Desktop.getDesktop()
                 if (desktop.isSupported(Desktop.Action.OPEN)) {

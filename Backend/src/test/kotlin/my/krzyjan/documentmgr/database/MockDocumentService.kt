@@ -20,14 +20,14 @@ class MockDocumentService: DocumentService {
     companion object {
         private var id: Int = 0
         var rows = mutableListOf(
-            TableRow(Document("202301 Gas Bill", "C:/Documents/2023/Gas/202301.pdf")),
-            TableRow(Document("202302 Water Bill", "C:/Documents/2023/Water/202302.pdf")),
-            TableRow(Document("202301 Electricity Bill", "C:/Documents/2023/Electricity/202301.pdf")),
-            TableRow(Document("202303 Water Bill", "C:/Documents/2023/Water/202303.pdf")),
-            TableRow(Document("202304 Gas Bill", "C:/Documents/2023/Gas/202304.pdf")),
-            TableRow(Document("202305 Electricity Bill", "C:/Documents/2023/Electricity/202305.pdf")),
-            TableRow(Document("202306 Water Bill", "C:/Documents/2023/Water/202306.pdf")),
-            TableRow(Document("202307 Gas Bill", "C:/Documents/2023/Gas/202307.pdf")),
+            TableRow(Document(1, "202301 Gas Bill", "C:/Documents/2023/Gas/202301.pdf")),
+            TableRow(Document(2, "202302 Water Bill", "C:/Documents/2023/Water/202302.pdf")),
+            TableRow(Document(3, "202301 Electricity Bill", "C:/Documents/2023/Electricity/202301.pdf")),
+            TableRow(Document(4, "202303 Water Bill", "C:/Documents/2023/Water/202303.pdf")),
+            TableRow(Document(5, "202304 Gas Bill", "C:/Documents/2023/Gas/202304.pdf")),
+            TableRow(Document(6, "202305 Electricity Bill", "C:/Documents/2023/Electricity/202305.pdf")),
+            TableRow(Document(7, "202306 Water Bill", "C:/Documents/2023/Water/202306.pdf")),
+            TableRow(Document(8, "202307 Gas Bill", "C:/Documents/2023/Gas/202307.pdf")),
         )
     }
 

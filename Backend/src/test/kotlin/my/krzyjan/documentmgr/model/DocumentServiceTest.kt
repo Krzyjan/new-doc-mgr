@@ -30,7 +30,7 @@ class DocumentServiceTest {
         ** Test create
          */
 
-        val id = documentService.create(Document(TestConstants.DOCUMENT_NAME, TestConstants.DOCUMENT_PATH))
+        val id = documentService.create(Document(1, TestConstants.DOCUMENT_NAME, TestConstants.DOCUMENT_PATH))
 
         var storedDocument = documentService.read(id)
 
@@ -42,7 +42,7 @@ class DocumentServiceTest {
         ** Test update
          */
 
-        documentService.update(id, Document(TestConstants.NEW_DOCUMENT_NAME, TestConstants.DOCUMENT_PATH))
+        documentService.update(id, Document(1, TestConstants.NEW_DOCUMENT_NAME, TestConstants.DOCUMENT_PATH))
 
         storedDocument = documentService.read(id)
 

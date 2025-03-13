@@ -61,6 +61,8 @@ fun mainView() = withDI(rootStore.di) {
     val fileOpenerModel = FileOpenerModel()
     val state = model.state
 
+    fileOpenerModel.fileOpener.initOpener()
+
     Column(Modifier.background(MaterialTheme.colors.background)) {
         documentListView(
             state.items,

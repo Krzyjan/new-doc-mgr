@@ -1,5 +1,10 @@
 package my.krzyjan.documentmgr
 
+import androidx.compose.runtime.Composable
+
 expect class FileOpener() {
-    fun openFile(fileUri: String, mimeType: String)
+    @Composable
+    fun initOpener()
+
+    fun openFile(fileName: String, mimeType: String)
 }
