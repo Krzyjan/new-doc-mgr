@@ -6,6 +6,6 @@ class FileOpenerModel {
     val fileOpener = FileOpener()
 
     fun handleFile(fileName: String) {
-        fileOpener.openFile(File(fileName).toURI().toString(), "application/pdf")
+        fileOpener.openFile(fileName, "application/pdf")
     }
 }
