@@ -1,7 +1,5 @@
 package my.krzyjan.documentmgr
 
-import java.io.File
-
 class FileOpenerModel {
     val fileOpener = FileOpener()
 

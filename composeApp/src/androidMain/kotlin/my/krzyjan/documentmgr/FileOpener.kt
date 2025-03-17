@@ -17,13 +17,23 @@ actual class FileOpener actual constructor() {
     }
     actual fun openFile(fileName: String, mimeType: String) {
         val uri = getFileUri(context, File(context.filesDir, fileName))
-        val intent = Intent(Intent.ACTION_SEND).apply {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
             type = mimeType
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
+
+        val resolveInfoList = context.packageManager.queryIntentActivities(intent, 0)
+        for (resolveInfo in resolveInfoList) {
+            val packageName = resolveInfo.activityInfo.packageName
+            context.grantUriPermission(
+                packageName,
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
         if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(Intent.createChooser(intent, "Share file"))
+            context.startActivity(intent)
         } else {
             // Handle the case where no app can handle the intent
         }
