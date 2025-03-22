@@ -16,7 +16,7 @@ actual class FileOpener actual constructor() {
         this.context = LocalContext.current
     }
     actual fun openFile(fileName: String, mimeType: String) {
-        val uri = getFileUri(context, File(context.filesDir, fileName))
+        val uri = getFileUri(context, File(getDocumentsFolder(), fileName))
         val intent = Intent(Intent.ACTION_VIEW).apply {
             type = mimeType
             putExtra(Intent.EXTRA_STREAM, uri)

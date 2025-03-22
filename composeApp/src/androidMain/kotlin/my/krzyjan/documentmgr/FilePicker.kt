@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.jvm.Throws
 
 private lateinit var filePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
@@ -48,14 +47,13 @@ private fun downloadFile(context: Context, uri: Uri): File? {
         val contentResolver = context.contentResolver
         val fileName =
             requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
-        val file = File(context.filesDir.absolutePath, fileName)
+        val file = File(getDocumentsFolder(), fileName)
 
         if (file.exists() && !BuildConfig.IS_DEBUG) {
             throw IOException("File already exists: ${file.absolutePath}")
         }
 
-        // On Android we store the document in the app persistent storage
-
+        // On Android we store the document in the shared Documents folder
         try {
             contentResolver.openInputStream(uri)?.use { inputStream ->
                 FileOutputStream(file).use { outputStream ->
