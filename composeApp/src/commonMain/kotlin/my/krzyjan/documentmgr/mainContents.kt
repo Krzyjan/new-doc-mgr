@@ -61,7 +61,7 @@ fun mainView() = withDI(rootStore.di) {
     val fileOpenerModel = FileOpenerModel()
     val state = model.state
 
-    fileOpenerModel.fileOpener.initOpener()
+    fileOpenerModel.fileOpener.InitOpener()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
         documentListView(
@@ -176,7 +176,7 @@ internal fun EditDialog(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        registerPathChanger(onEditorPathChanged)
+                        RegisterPathChanger(onEditorPathChanged)
 
                         Button(
                             onClick = onEditorCloseClicked,

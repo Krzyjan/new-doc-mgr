@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 
 expect class FileOpener() {
     @Composable
-    fun initOpener()
+    fun InitOpener()
 
     fun openFile(fileName: String, mimeType: String)
 }

@@ -75,7 +75,7 @@ fun newDocumentView(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        registerPathChanger(setPath)
+        RegisterPathChanger(setPath)
 
         OutlinedTextField(
             value = state.newPath,

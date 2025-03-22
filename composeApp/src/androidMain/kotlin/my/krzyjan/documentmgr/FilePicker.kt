@@ -19,14 +19,14 @@ import java.io.IOException
 private lateinit var filePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 
 @Composable
-actual fun registerPathChanger(onFileSelected: (String) -> Unit) {
+actual fun RegisterPathChanger(onFileSelected: (String) -> Unit) {
     val context = LocalContext.current
     filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
-            uri?.let { downloadFile(context, it)?.name }?.let { onFileSelected(it) }
+            uri?.let { downloadFile(context, it).name }?.let { onFileSelected(it) }
         }
     }
 }
@@ -42,47 +42,44 @@ actual fun launchFilePicker() {
 private const val READ_BUFFER_SIZE = 8 * 1024
 
 @Throws(IOException::class)
-private fun downloadFile(context: Context, uri: Uri): File? {
-    if (uri.scheme == "content") {
-        val contentResolver = context.contentResolver
-        val fileName =
-            requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
-        val file = File(getDocumentsFolder(), fileName)
+private fun downloadFile(context: Context, uri: Uri): File {
+    require(uri.scheme == "content") { "Unsupported URI scheme: ${uri.scheme}" }
+    val contentResolver = context.contentResolver
+    val fileName =
+        requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
+    val file = File(getDocumentsFolder(), fileName)
 
-        if (file.exists() && !BuildConfig.IS_DEBUG) {
-            throw IOException("File already exists: ${file.absolutePath}")
-        }
-
-        // On Android we store the document in the shared Documents folder
-        try {
-            contentResolver.openInputStream(uri)?.use { inputStream ->
-                FileOutputStream(file).use { outputStream ->
-                    inputStream.copyTo(outputStream, bufferSize = READ_BUFFER_SIZE)
-                }
-            }
-            return file
-        } catch (e: IOException) {
-            Log.e("getFileFromUri", "${e.stackTrace}")
-            throw e
-        }
-    } else {
-        throw IllegalArgumentException("Unsupported URI scheme: ${uri.scheme}")
+    if (file.exists() && !BuildConfig.IS_DEBUG) {
+        throw IOException("File already exists: ${file.absolutePath}")
     }
-    return null
+
+    // On Android we store the document in the shared Documents folder
+    try {
+        contentResolver.openInputStream(uri)?.use { inputStream ->
+            FileOutputStream(file).use { outputStream ->
+                inputStream.copyTo(outputStream, bufferSize = READ_BUFFER_SIZE)
+            }
+        }
+        return file
+    } catch (e: IOException) {
+        Log.e("getFileFromUri", "${e.stackTrace}")
+        throw e
+    }
 }
 
 private fun getFileName(contentResolver: android.content.ContentResolver, uri: Uri): String? {
     var result: String? = null
-    if (uri.scheme == "content") {
-        val cursor = contentResolver.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (displayNameIndex != -1) {
-                    result = it.getString(displayNameIndex)
-                }
+
+    require(uri.scheme == "content") { "Unsupported URI scheme: ${uri.scheme}" }
+    val cursor = contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        if (it.moveToFirst()) {
+            val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (displayNameIndex != -1) {
+                result = it.getString(displayNameIndex)
             }
         }
     }
+
     return result
 }

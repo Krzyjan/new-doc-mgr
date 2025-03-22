@@ -8,7 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 private lateinit var documentPathChanger: (String) -> Unit
 
 @Composable
-actual fun registerPathChanger(onFileSelected: (String) -> Unit) {
+actual fun RegisterPathChanger(onFileSelected: (String) -> Unit) {
     documentPathChanger = onFileSelected
 }
 

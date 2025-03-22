@@ -9,7 +9,7 @@ import java.net.URI
 actual class FileOpener actual constructor() {
 
     @Composable
-    actual fun initOpener() {}
+    actual fun InitOpener() {}
 
     actual fun openFile(fileName: String, mimeType: String) {
         try {
