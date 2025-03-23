@@ -47,7 +47,7 @@ actual class FileOpener actual constructor() {
         LaunchedEffect(key1 = fileName.value) {
             val fileName = fileName.value ?: return@LaunchedEffect
             val mimeType = mimeType.value ?: return@LaunchedEffect
-            val fileUri = createFileInDownloads(context, fileName) ?: return@LaunchedEffect
+            val fileUri = getFileUri(context, File(getDocumentsFolder(), fileName))
             this@FileOpener.fileUri.value = fileUri
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -90,31 +90,7 @@ actual class FileOpener actual constructor() {
         }
     }
 
-    private fun createFileInDownloads(context: Context, fileName: String): Uri? {
-        val downloadsDir = getDocumentsFolder()
-        val file = File(downloadsDir, fileName)
-        return try {
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    Log.e("FileOpener", "Error creating file")
-                    return null
-                }
-            }
-            val fileUri = getFileUri(context, file)
-            val contentResolver = context.contentResolver
-            contentResolver.openOutputStream(fileUri)?.use { outputStream ->
-                // Write data to the file
-                val text = "This is an example file"
-                outputStream.write(text.toByteArray())
-            }
-            fileUri
-        } catch (e: Exception) {
-            Log.e("FileOpener", "Error creating or writing to file", e)
-            null
-        }
-    }
-
-    fun getFileUri(context: Context, file: File): Uri {
+    private fun getFileUri(context: Context, file: File): Uri {
         return FileProvider.getUriForFile(
             context,
             "${context.packageName}.fileprovider", // Same as in AndroidManifest.xml
