@@ -26,7 +26,7 @@ actual fun RegisterPathChanger(onFileSelected: (String) -> Unit) {
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
-            uri?.let { downloadFile(context, it).name }?.let { onFileSelected(it) }
+            uri?.let { downloadFile(context, it)?.name}?.let { onFileSelected(it) }
         }
     }
 }
@@ -42,15 +42,21 @@ actual fun launchFilePicker() {
 private const val READ_BUFFER_SIZE = 8 * 1024
 
 @Throws(IOException::class)
-private fun downloadFile(context: Context, uri: Uri): File {
+private fun downloadFile(context: Context, uri: Uri): File? {
     require(uri.scheme == "content") { "Unsupported URI scheme: ${uri.scheme}" }
     val contentResolver = context.contentResolver
-    val fileName =
-        requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
-    val file = File(getDocumentsFolder(), fileName)
+    val (fileName, fileSize) = requireNotNull(getFileName(contentResolver, uri)) { "Failed to get file name from URI" }
+    val file = fileName?.let { File(getDocumentsFolder(), it) }
 
-    if (file.exists() && !BuildConfig.IS_DEBUG) {
-        throw IOException("File already exists: ${file.absolutePath}")
+    // The file may already be in the shared Documents folder
+    file?.let  {
+        if (it.exists() && it.length() == fileSize) {
+            if (it.length() == fileSize) {
+                return it
+            } else {
+                throw IOException("existing $fileName is the wrong size: $fileSize")
+            }
+        }
     }
 
     // On Android we store the document in the shared Documents folder
@@ -67,8 +73,12 @@ private fun downloadFile(context: Context, uri: Uri): File {
     }
 }
 
-private fun getFileName(contentResolver: android.content.ContentResolver, uri: Uri): String? {
-    var result: String? = null
+/*
+** This just gets a file name without a full path. Using full paths is not really supported on Android.
+ */
+private fun getFileName(contentResolver: android.content.ContentResolver, uri: Uri): Pair<String?, Long>? {
+    var name: String? = null
+    var fileSize: Long = 0
 
     require(uri.scheme == "content") { "Unsupported URI scheme: ${uri.scheme}" }
     val cursor = contentResolver.query(uri, null, null, null, null)
@@ -76,10 +86,17 @@ private fun getFileName(contentResolver: android.content.ContentResolver, uri: U
         if (it.moveToFirst()) {
             val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             if (displayNameIndex != -1) {
-                result = it.getString(displayNameIndex)
+                name = it.getString(displayNameIndex)
             }
+            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+            fileSize = cursor.getLong(sizeIndex)
+
         }
     }
 
-    return result
+    if (name != null) {
+        return Pair(name, fileSize)
+    } else {
+        return null
+    }
 }

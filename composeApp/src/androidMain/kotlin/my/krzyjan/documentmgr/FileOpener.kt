@@ -1,66 +1,26 @@
 package my.krzyjan.documentmgr
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import java.io.File
 
 actual class FileOpener actual constructor() {
     private lateinit var context: Context
-    private var fileUri = mutableStateOf<Uri?>(null)
-    private var mimeType = mutableStateOf<String?>(null)
-    private val fileName = mutableStateOf<String?>(null)
-
-    private lateinit var openFileLauncher: ActivityResultLauncher<Intent>
 
     @Composable
     actual fun InitOpener() {
         this.context = LocalContext.current
-
-        openFileLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult(),
-            onResult = { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    result.data?.data?.let { uri ->
-                        openFileWithIntent(uri, mimeType.value)
-                    }
-                }
-            }
-        )
-
-        // Composable function to launch the SAF intent.
-        OpenFileSaf()
-    }
-
-    @Composable
-    private fun OpenFileSaf() {
-        LaunchedEffect(key1 = fileName.value) {
-            val fileName = fileName.value ?: return@LaunchedEffect
-            val mimeType = mimeType.value ?: return@LaunchedEffect
-            val fileUri = getFileUri(context, File(getDocumentsFolder(), fileName))
-            this@FileOpener.fileUri.value = fileUri
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = mimeType
-                putExtra(Intent.EXTRA_STREAM, fileUri)
-            }
-            openFileLauncher.launch(intent)
-        }
     }
 
     actual fun openFile(fileName: String, mimeType: String) {
-        this.mimeType.value = mimeType
-        this.fileName.value = fileName
+        val file = File(getDocumentsFolder(), fileName)
+        val fileUri = getFileUri(context, file)
+        openFileWithIntent(fileUri, mimeType)
     }
 
     private fun openFileWithIntent(uri: Uri, mimeType: String?) {
