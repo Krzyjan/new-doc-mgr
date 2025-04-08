@@ -13,7 +13,7 @@ pluginManagement {
 
     plugins {
         id("org.springframework.boot") version "3.1.0"
-        id("org.jetbrains.compose") version "1.6.2"
+        id("org.jetbrains.compose") version "1.7.3"
         kotlin("plugin.spring") version "3.1.0"
     }
 }
