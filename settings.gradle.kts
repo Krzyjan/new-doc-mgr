@@ -1,7 +1,7 @@
 rootProject.name = "NewDocumentManager"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-include(":Backend", ":composeApp")
+include(":model", ":composeApp")
 
 pluginManagement {
     repositories {

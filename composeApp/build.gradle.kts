@@ -39,7 +39,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.exposed.core)
             implementation(libs.kodein.di.framework.compose)
-            implementation(project(":Backend"))
+            implementation(project(":model"))
             implementation(libs.hoplite.core)
             implementation(libs.hoplite.hocon)
             implementation(libs.androidx.material3.android)

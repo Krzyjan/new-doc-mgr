@@ -28,3 +28,4 @@ class GetPagedDocuments @Inject constructor(
         const val PAGE_SIZE = 5
     }
 }
+
