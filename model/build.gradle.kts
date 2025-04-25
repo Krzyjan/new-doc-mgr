@@ -25,7 +25,6 @@ kotlin {
         runtimeOnly(libs.kotlinx.coroutines.android)
         testImplementation(libs.hoplite.core)
         testImplementation(libs.hoplite.hocon)
-        testImplementation(project(":composeApp"))
     }
 }
 
