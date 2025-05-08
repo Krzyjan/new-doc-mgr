@@ -28,19 +28,24 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.exposed.core)
                 implementation(libs.kodein.di.framework.compose)
-                implementation(project(":model"))
                 implementation(libs.hoplite.core)
                 implementation(libs.hoplite.hocon)
                 implementation(libs.androidx.material3.android)
                 implementation(libs.material.icons.extended)
+                implementation(project(":model"))
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(libs.compose.ui.tooling.preview)
                 implementation(libs.androidx.activity.compose)
-                implementation(libs.compose.ui.tooling)
+            }
+        }
+        //Rename androidTest to androidUnitTest
+        val androidUnitTest by getting {
+            dependencies {
+                //implementation(libs.compose.ui.tooling)
+                //implementation(libs.compose.ui.tooling.preview)
             }
         }
 
@@ -49,6 +54,17 @@ kotlin {
                 implementation(compose.desktop.currentOs)
             }
         }
+        val debug by creating{
+            dependsOn(getByName("commonMain"))
+            dependencies {
+                implementation(libs.compose.ui.tooling)
+                implementation(libs.compose.ui.tooling.preview)
+            }
+        }
+        val release by creating{
+            dependsOn(getByName("commonMain"))
+        }
+
     }
 }
 
@@ -75,7 +91,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = buildType == "release"
             buildConfigField("Boolean", "IS_DEBUG", "false")
         }
         getByName("debug") {
@@ -86,7 +102,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    buildFeatures{
+    buildFeatures {
         buildConfig = true
     }
 }
