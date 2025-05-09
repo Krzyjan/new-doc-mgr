@@ -41,7 +41,7 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
             }
         }
-        //Rename androidTest to androidUnitTest
+
         val androidUnitTest by getting {
             dependencies {
                 //implementation(libs.compose.ui.tooling)
@@ -59,10 +59,14 @@ kotlin {
             dependencies {
                 implementation(libs.compose.ui.tooling)
                 implementation(libs.compose.ui.tooling.preview)
+                implementation(project(path = ":model", configuration = "debugImplementation"))
             }
         }
         val release by creating{
             dependsOn(getByName("commonMain"))
+            dependencies {
+                implementation(project(path = ":model", configuration = "releaseImplementation"))
+            }
         }
 
     }
