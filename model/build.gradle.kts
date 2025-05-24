@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinAllOpen)
@@ -9,27 +7,93 @@ plugins {
 group = "me.krzyjan.documentmgr"
 version = "1.0-SNAPSHOT"
 
+val buildVariantAttributeName = "my.krzyjan.buildVariant"
+
+dependencies {
+    attributesSchema {
+        attribute(Attribute.of(buildVariantAttributeName, String::class.java))
+    }
+}
+
+// Create configurations for debug and release variants
+
+val debugConfiguration: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    extendsFrom(configurations.implementation.get())
+    description = "Debug implementation of this project"
+}
+
+val releaseConfiguration: Configuration by configurations.creating {
+    isCanBeResolved = true
+    isCanBeConsumed = false
+    extendsFrom(configurations.implementation.get())
+    description = "Release implementation of this project"
+}
+
+val debugSourceSet = "debugSourceSet"
+val releaseSourceSet = "releaseSourceSet"
+sourceSets {
+    create(debugSourceSet) {
+        kotlin.srcDirs("src/debug/kotlin")
+        resources.srcDirs("src/debug/resources")
+
+        // connect configuration to this source set
+        compileClasspath += debugConfiguration
+        runtimeClasspath += debugConfiguration
+
+        // Also use the code from "main"
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+    create(releaseSourceSet) {
+        kotlin.srcDir("src/release/kotlin")
+        resources.srcDirs("src/release/resources")
+
+        // connect configuration to this source set
+        compileClasspath += releaseConfiguration
+        runtimeClasspath += releaseConfiguration
+
+        // Also use the code from "main"
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+}
+
+// Fetch already generated Kotlin compile tasks for the variants
+val compileDebugSourceSetKotlin by tasks
+val compileReleaseSourceSetKotlin by tasks
+
+// Task for debug variant
+val debugJar by tasks.registering(Jar::class) {
+    dependsOn(compileDebugSourceSetKotlin)
+    archiveClassifier.set("debug")
+    from(sourceSets[debugSourceSet].output)
+    from(sourceSets.main.get().output)
+}
+
+// Task for release variant
+val releaseJar by tasks.registering(Jar::class) {
+    dependsOn(compileReleaseSourceSetKotlin)
+    archiveClassifier.set("release")
+    from(sourceSets[releaseSourceSet].output)
+    from(sourceSets.main.get().output)
+}
+
+// Configure the standard 'jar' task to be an alias for the release
+tasks.named<Jar>("jar") {
+    dependsOn(releaseJar)
+
+    enabled = false // make sure it does not actually run
+}
+
+tasks.named("build").configure {
+    dependsOn.clear() // Remove any default dependencies
+    dependsOn(debugJar, releaseJar)
+}
+
 kotlin {
     jvmToolchain(21)
-
-    // Create configurations for debug and release variants
-    val debugImplementation = configurations.create("debugImplementation")
-    val releaseImplementation = configurations.create("releaseImplementation")
-
-    // Create build types
-    val debug = "debug"
-    val release = "release"
-
-    // Define source sets for debug and release
-    val debugSourceSet = sourceSets.create(debug) {
-        kotlin.srcDir("src/debug/kotlin")
-    }
-    val releaseSourceSet = sourceSets.create(release) {
-        kotlin.srcDir("src/release/kotlin")
-    }
-    //This code will add the compile tasks
-    this.target.compilations.create(debug)
-    this.target.compilations.create(release)
 
     sourceSets.getByName("main") {
         dependencies {
@@ -42,24 +106,6 @@ kotlin {
             implementation(libs.java.inject)
             implementation(libs.h2)
         }
-    }
-    sourceSets.create("commonMain") {
-        dependencies {
-            implementation(libs.kotlin.reflect)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.exposed.core)
-            implementation(libs.exposed.dao)
-            implementation(libs.exposed.jdbc)
-            implementation(libs.paging.common)
-            implementation(libs.java.inject)
-            implementation(libs.h2)
-        }
-    }
-
-    // Add dependencies to the debug and release configurations
-    dependencies {
-        debugImplementation(project(":model"))
-        releaseImplementation(project(":model"))
     }
 
     //Rename test to jvmTest
@@ -74,48 +120,42 @@ kotlin {
         }
     }
 
-    // Correctly get the debug classes directory
-    fun getDebugClassesDir(): File {
-        val compileTask =
-            tasks.named("compile${debugSourceSet.name.replaceFirstChar { it.uppercase() }}Kotlin")
-                .get() as KotlinCompile
-        return compileTask.destinationDirectory.get().asFile
-    }
-
-    // Correctly get the release classes directory
-    fun getReleaseClassesDir(): File {
-        val compileTask =
-            tasks.named("compile${releaseSourceSet.name.replaceFirstChar { it.uppercase() }}Kotlin")
-                .get() as KotlinCompile
-        return compileTask.destinationDirectory.get().asFile
-    }
-
-    // Create debug and release tasks
-    tasks.register<Jar>("jarDebug") {
-        archiveClassifier.set(debug)
-        // Use the correct classes directory
-        from(getDebugClassesDir())
-        // Make the Jar task depend on the compilation task
-        dependsOn(tasks.named("compile${debugSourceSet.name.replaceFirstChar { it.uppercase() }}Kotlin"))
-    }
-
-    tasks.register<Jar>("jarRelease") {
-        archiveClassifier.set(release)
-        // Use the correct classes directory
-        from(getReleaseClassesDir())
-        // Make the Jar task depend on the compilation task
-        dependsOn(tasks.named("compile${releaseSourceSet.name.replaceFirstChar { it.uppercase() }}Kotlin"))
-    }
-
-    // Add the debug and release variants to the corresponding configurations
-    artifacts {
-        add(debugImplementation.name, tasks.named("jarDebug"))
-        add(releaseImplementation.name, tasks.named("jarRelease"))
-    }
-
     // Configure the test task to run with the debug and release variants
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+    }
+}
+
+configurations {
+    val runtimeElements by getting
+
+    create("debugElements") {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+        attributes {
+            // Standard usage attribute
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+            attribute(Attribute.of("org.jetbrains.kotlin.platform.type", String::class.java), "jvm")
+
+            // Custom build variant attribute
+            attribute(Attribute.of(buildVariantAttributeName, String::class.java), "debug")
+        }
+        extendsFrom(configurations.implementation.get())
+        outgoing.artifact(tasks.named("debugJar"))
+        description = "Consumable debug implementation of this project"
+    }
+
+    create("releaseElements") {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+        attributes {
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+            attribute(Attribute.of("org.jetbrains.kotlin.platform.type", String::class.java), "jvm")
+            attribute(Attribute.of(buildVariantAttributeName, String::class.java), "release")
+        }
+        extendsFrom(configurations.implementation.get())
+        outgoing.artifact(tasks.named("releaseJar"))
+        description = "Consumable release implementation of this project"
     }
 }
 
@@ -124,3 +164,4 @@ configure<org.jetbrains.kotlin.allopen.gradle.AllOpenExtension> {
     annotation("javax.persistence.MappedSuperclass")
     annotation("javax.persistence.Embeddable")
 }
+

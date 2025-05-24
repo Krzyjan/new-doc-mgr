@@ -8,7 +8,7 @@ import my.krzyjan.documentmgr.model.TestConstants
 import org.jetbrains.exposed.sql.Database
 
 fun main() {
-    val config = ConfigLoaderBuilder.default().addResourceSource("/application-prod.conf").build()
+    val config = ConfigLoaderBuilder.default().addResourceSource("/application.conf").build()
         .loadConfigOrThrow<ApplicationConfig>()
 
     val database: Database = Database.connect(

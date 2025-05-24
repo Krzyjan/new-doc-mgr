@@ -39,7 +39,7 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.compose.withDI
 
 private val applicationConfig =
-    ConfigLoaderBuilder.default().addResourceSource("/application-dev.conf").build()
+    ConfigLoaderBuilder.default().addResourceSource("/application.conf").build()
         .loadConfigOrThrow<ApplicationConfig>()
 
 private val rootStore: ViewModel = ViewModel(DI {

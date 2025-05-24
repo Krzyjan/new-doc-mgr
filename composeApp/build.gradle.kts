@@ -32,7 +32,16 @@ kotlin {
                 implementation(libs.hoplite.hocon)
                 implementation(libs.androidx.material3.android)
                 implementation(libs.material.icons.extended)
-                implementation(project(":model"))
+                implementation(project(":model")) {
+                    val consumerBuildType = project.findProperty("consumerBuildType")?.toString()
+                        ?: "release" // Default to release
+                    attributes {
+                        attribute(
+                            Attribute.of("my.krzyjan.buildVariant", String::class.java),
+                            consumerBuildType
+                        )
+                    }
+                }
             }
         }
 
@@ -42,33 +51,11 @@ kotlin {
             }
         }
 
-        val androidUnitTest by getting {
-            dependencies {
-                //implementation(libs.compose.ui.tooling)
-                //implementation(libs.compose.ui.tooling.preview)
-            }
-        }
-
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
             }
         }
-        val debug by creating{
-            dependsOn(getByName("commonMain"))
-            dependencies {
-                implementation(libs.compose.ui.tooling)
-                implementation(libs.compose.ui.tooling.preview)
-                implementation(project(path = ":model", configuration = "debugImplementation"))
-            }
-        }
-        val release by creating{
-            dependsOn(getByName("commonMain"))
-            dependencies {
-                implementation(project(path = ":model", configuration = "releaseImplementation"))
-            }
-        }
-
     }
 }
 
