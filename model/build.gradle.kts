@@ -1,3 +1,7 @@
+import org.gradle.api.attributes.Bundling
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.Usage
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinAllOpen)
@@ -18,8 +22,8 @@ dependencies {
 // Create configurations for debug and release variants
 
 val debugConfiguration: Configuration by configurations.creating {
-    isCanBeConsumed = false
     isCanBeResolved = true
+    isCanBeConsumed = false
     extendsFrom(configurations.implementation.get())
     description = "Debug implementation of this project"
 }
@@ -29,6 +33,24 @@ val releaseConfiguration: Configuration by configurations.creating {
     isCanBeConsumed = false
     extendsFrom(configurations.implementation.get())
     description = "Release implementation of this project"
+}
+
+// Pick the debug variant for the test configurations
+configurations {
+    listOf(
+        "testCompileClasspath",
+        "testRuntimeClasspath",
+        "testFixturesCompileClasspath",
+        "testFixturesRuntimeClasspath"
+    ).forEach { name ->
+        findByName(name)?.let {
+            it.attributes {
+                // Add the custom attribute with the desired value for tests.
+                // Usually, for local unit tests, you test against the 'debug' variant.
+                attribute(Attribute.of(buildVariantAttributeName, String::class.java), "debug")
+            }
+        }
+    }
 }
 
 val debugSourceSet = "debugSourceSet"
@@ -63,6 +85,11 @@ sourceSets {
 // Fetch already generated Kotlin compile tasks for the variants
 val compileDebugSourceSetKotlin by tasks
 val compileReleaseSourceSetKotlin by tasks
+
+// Make sure all compilations target Java 21
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+}
 
 // Task for debug variant
 val debugJar by tasks.registering(Jar::class) {
@@ -136,6 +163,9 @@ configurations {
             // Standard usage attribute
             attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
             attribute(Attribute.of("org.jetbrains.kotlin.platform.type", String::class.java), "jvm")
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category::class.java, Category.LIBRARY))
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling::class.java, Bundling.EXTERNAL))
+            attribute(Attribute.of("org.gradle.jvm.environment", String::class.java), "standard-jvm")
 
             // Custom build variant attribute
             attribute(Attribute.of(buildVariantAttributeName, String::class.java), "debug")
@@ -151,11 +181,24 @@ configurations {
         attributes {
             attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
             attribute(Attribute.of("org.jetbrains.kotlin.platform.type", String::class.java), "jvm")
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category::class.java, Category.LIBRARY))
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling::class.java, Bundling.EXTERNAL))
+            attribute(Attribute.of("org.gradle.jvm.environment", String::class.java), "standard-jvm")
             attribute(Attribute.of(buildVariantAttributeName, String::class.java), "release")
         }
         extendsFrom(configurations.implementation.get())
         outgoing.artifact(tasks.named("releaseJar"))
         description = "Consumable release implementation of this project"
+    }
+
+    // A hack to hide standard configurations from the consumer (:composeApp)
+    listOf(
+        java.sourceSets.main.get().apiElementsConfigurationName,
+        java.sourceSets.main.get().runtimeElementsConfigurationName
+    ).forEach { configurationName ->
+        findByName(configurationName)?.let {
+            it.isCanBeConsumed = false
+        }
     }
 }
 

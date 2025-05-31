@@ -1,8 +1,8 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
 }
@@ -10,7 +10,8 @@ plugins {
 group = "my.krzyjan.documentmgr"
 version = "1.0-SNAPSHOT"
 
-val buildType = project.findProperty("buildType") as? String ?: "debug"
+val consumerBuildType = project.findProperty("consumerBuildType")?.toString()
+    ?: "debug" // Default to release
 
 kotlin {
     androidTarget()
@@ -33,8 +34,6 @@ kotlin {
                 implementation(libs.androidx.material3.android)
                 implementation(libs.material.icons.extended)
                 implementation(project(":model")) {
-                    val consumerBuildType = project.findProperty("consumerBuildType")?.toString()
-                        ?: "release" // Default to release
                     attributes {
                         attribute(
                             Attribute.of("my.krzyjan.buildVariant", String::class.java),
@@ -47,6 +46,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
+                implementation(compose.components.uiToolingPreview)
                 implementation(libs.androidx.activity.compose)
             }
         }
@@ -62,6 +62,11 @@ kotlin {
 android {
     namespace = "my.krzyjan.documentmgr"
     compileSdk = 35
+
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
 
     sourceSets {
         getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -82,7 +87,11 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = buildType == "release"
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             buildConfigField("Boolean", "IS_DEBUG", "false")
         }
         getByName("debug") {
@@ -92,9 +101,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-    buildFeatures {
-        buildConfig = true
     }
 }
 
@@ -106,6 +112,20 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "my.krzyjan.documentmgr"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+android.applicationVariants.all {
+    if (name == "debug") { // Or any other variant you're interested in
+        tasks.named("compile${name.capitalize()}KotlinAndroid") {
+            val compileTask = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+            doFirst {
+                println("Classpath for $name Kotlin compile:")
+                compileTask.libraries.files.forEach { file ->
+                    println(file.absolutePath)
+                }
+            }
         }
     }
 }
