@@ -103,6 +103,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 }
+dependencies {
+    implementation(libs.androidx.ui.tooling.preview.android)
+}
 
 compose.desktop {
     application {
@@ -117,7 +120,7 @@ compose.desktop {
 }
 
 android.applicationVariants.all {
-    if (name == "debug") { // Or any other variant you're interested in
+    if (name == "release") { // Or any other variant you're interested in
         tasks.named("compile${name.capitalize()}KotlinAndroid") {
             val compileTask = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
             doFirst {

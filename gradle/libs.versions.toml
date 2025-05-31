@@ -6,7 +6,7 @@ jupiter = "5.11.3"
 exposed = "0.41.1"
 paging = "3.3.6"
 h2 = "2.2.224"
-agp = "8.10.0"
+agp = "8.10.1"
 android-minSdk = "24"
 android-targetSdk = "34"
 androidx-activityCompose = "1.10.1"
@@ -17,6 +17,7 @@ hoplite = "2.7.5"
 material3Android = "1.3.2"
 materialIconsExtended = "1.7.8"
 kotest = "6.0.0.M3"
+uiToolingPreviewAndroid = "1.8.2"
 
 
 [libraries]
@@ -46,6 +47,7 @@ material-icons-extended = { module = "androidx.compose.material:material-icons-e
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
+androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 
 [bundles]
 
