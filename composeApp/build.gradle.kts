@@ -11,7 +11,7 @@ group = "my.krzyjan.documentmgr"
 version = "1.0-SNAPSHOT"
 
 val consumerBuildType = project.findProperty("consumerBuildType")?.toString()
-    ?: "debug" // Default to release
+    ?: "release" // Default to release
 
 kotlin {
     androidTarget()
@@ -87,11 +87,6 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
             buildConfigField("Boolean", "IS_DEBUG", "false")
         }
         getByName("debug") {
@@ -120,7 +115,8 @@ compose.desktop {
 }
 
 android.applicationVariants.all {
-    if (name == "release") { // Or any other variant you're interested in
+    val buildVariants = listOf("debug", "release")
+    if (buildVariants.contains(name)) {
         tasks.named("compile${name.capitalize()}KotlinAndroid") {
             val compileTask = this as org.jetbrains.kotlin.gradle.tasks.KotlinCompile
             doFirst {
