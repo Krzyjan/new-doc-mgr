@@ -25,6 +25,9 @@ class ViewModel(private val documentService: DocumentService) {
 
     fun onDeleteItemConfirmed() {
         setState {
+            if (itemToDeleteId != null) {
+                documentService.delete(itemToDeleteId)
+            }
             copy(items = items.filterNot { it.id == itemToDeleteId }, itemToDeleteId = null)
         }
     }
@@ -63,7 +66,12 @@ class ViewModel(private val documentService: DocumentService) {
     }
 
     fun onEditorCloseClicked() {
-        setState { copy(editingItemId = null) }
+        setState {
+            if (editingItemId != null) {
+                documentService.update(editingItemId, items.first { editingItemId == it.id })
+            }
+            copy(editingItemId = null)
+        }
     }
 
     fun onEditorNameChanged(name: String) {
