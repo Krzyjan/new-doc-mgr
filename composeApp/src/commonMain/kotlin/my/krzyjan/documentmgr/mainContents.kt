@@ -34,30 +34,24 @@ import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
 import my.krzyjan.documentmgr.model.ExposedDocumentService
 import org.jetbrains.exposed.sql.Database
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.compose.withDI
 
 private val applicationConfig =
     ConfigLoaderBuilder.default().addResourceSource("/application.conf").build()
         .loadConfigOrThrow<ApplicationConfig>()
 
-private val rootStore: ViewModel = ViewModel(DI {
-    bindSingleton<DocumentService> {
-        val database: Database = Database.connect(
-            url = "jdbc:h2:${applicationConfig.database.path};" +
+val documentService: DocumentService = ExposedDocumentService(
+    Database.connect(
+        url = "jdbc:h2:${applicationConfig.database.path};" +
                 "${applicationConfig.database.urlExtra};" +
-                    applicationConfig.database.debug,
-            driver = "org.h2.Driver",
-            user = applicationConfig.database.user
-        )
-        ExposedDocumentService(database)
-    }
-})
+                applicationConfig.database.debug,
+        driver = "org.h2.Driver",
+        user = applicationConfig.database.user
+    )
+)
 
 @Composable
-fun mainView() = withDI(rootStore.di) {
-    val model = remember { rootStore }
+fun mainView() {
+    val model = remember { ViewModel(documentService) }
     val fileOpenerModel = FileOpenerModel()
     val state = model.state
 

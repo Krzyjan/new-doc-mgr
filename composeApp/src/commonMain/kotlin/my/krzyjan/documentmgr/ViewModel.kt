@@ -5,16 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import my.krzyjan.documentmgr.model.Document
 import my.krzyjan.documentmgr.model.DocumentService
-import org.kodein.di.DI
-import org.kodein.di.instance
 
-class ViewModel(val di: DI) {
+class ViewModel(private val documentService: DocumentService) {
 
     companion object ViewModelConstants {
         const val INITIAL_PAGE_SIZE = 20
     }
-
-    private val documentService: DocumentService by di.instance<DocumentService>()
 
     var state: ModelState by mutableStateOf(setInitialState())
         private set
